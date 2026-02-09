@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AWS Cloud Portfolio</title>
+  <meta name="description" content="AWS/Cloud projects portfolio with architecture, workflows, and live demos." />
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <nav class="nav">
+      <div class="brand">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <a href="#top" class="brand-link">My Cloud Portfolio</a>
+      </div>
+
+      <div class="nav-links">
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#workflows">Workflows</a>
+        <a href="#contact">Contact</a>
+        <button id="themeToggle" class="btn btn-ghost" type="button" aria-label="Toggle theme">
+          Theme
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="container">
+    <section class="hero" id="top">
+      <div class="hero-content reveal">
+        <p class="eyebrow">AWS • DevOps • Cloud Engineering</p>
+        <h1>Projects with real infrastructure, security, and delivery pipelines.</h1>
+        <p class="subhead">
+          This site is hosted on AWS with a private S3 origin behind CloudFront (OAC), HTTPS, and CI/CD from GitHub.
+        </p>
+
+        <div class="hero-actions">
+          <a class="btn" href="#projects">View Projects</a>
+          <a class="btn btn-ghost" href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+          <a class="btn btn-ghost" href="#workflows">Architecture & Workflows</a>
+        </div>
+
+        <div class="hero-metrics">
+          <div class="metric">
+            <div class="metric-value" id="projectCount">—</div>
+            <div class="metric-label">Projects</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value">AWS</div>
+            <div class="metric-label">Hosted</div>
+          </div>
+          <div class="metric">
+            <div class="metric-value">CI/CD</div>
+            <div class="metric-label">GitHub → AWS</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="projects">
+      <div class="section-head reveal">
+        <h2>Projects</h2>
+        <p>Filter by focus area. Each project links to a case-study README with diagrams and build steps.</p>
+      </div>
+
+      <div class="filters reveal" id="filters" aria-label="Project filters"></div>
+
+      <div class="grid reveal" id="projectsGrid" aria-live="polite"></div>
+    </section>
+
+    <section class="section" id="skills">
+      <div class="section-head reveal">
+        <h2>Skills</h2>
+        <p>What I can do reliably (not just “familiar with”).</p>
+      </div>
+
+      <div class="two-col reveal">
+        <div class="card">
+          <h3>Cloud & Infra</h3>
+          <ul>
+            <li>CloudFront, S3, Route 53, ACM</li>
+            <li>IAM least-privilege + OIDC federation</li>
+            <li>Serverless patterns: API Gateway → Lambda → DynamoDB/SNS</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>DevOps</h3>
+          <ul>
+            <li>CI/CD with GitHub Actions</li>
+            <li>Cache invalidations, build artifacts, environment separation</li>
+            <li>Logging/monitoring basics (CloudWatch + access logs)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="workflows">
+      <div class="section-head reveal">
+        <h2>Architecture & Workflows</h2>
+        <p>How this portfolio is delivered and secured.</p>
+      </div>
+
+      <div class="card reveal">
+        <h3>Hosting workflow</h3>
+        <ol>
+          <li>Push to <strong>main</strong> on GitHub</li>
+          <li>GitHub Actions assumes an AWS IAM role via <strong>OIDC</strong> (no stored access keys)</li>
+          <li>Deploy to S3 + CloudFront invalidation</li>
+        </ol>
+        <p class="muted">
+          CloudFront uses Origin Access Control so the S3 bucket can remain private. :contentReference[oaicite:5]{index=5}
+        </p>
+      </div>
+    </section>
+
+    <section class="section" id="contact">
+      <div class="section-head reveal">
+        <h2>Contact</h2>
+        <p>For roles, collaborations, or feedback.</p>
+      </div>
+
+      <div class="card reveal">
+        <div class="contact-grid">
+          <a class="btn" href="mailto:you@example.com">Email</a>
+          <a class="btn btn-ghost" href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
+          <a class="btn btn-ghost" href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+        </div>
+        <p class="muted">Optional upgrade: add a real AWS-backed contact form (API Gateway → Lambda → SNS/SES).</p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p class="muted">© <span id="year"></span> • Built and hosted on AWS.</p>
+    </footer>
+  </main>
+
+  <script src="js/main.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Real-Time Personal Tracker (AWS Location + Events)",
+    "description": "Location tracking + geofence events + alerts. Designed as a scalable, event-driven AWS app.",
+    "focus": "Event-driven architecture, notifications, auth",
+    "aws": ["Amazon Location Service", "EventBridge", "Lambda", "SNS", "Cognito", "CloudWatch"],
+    "tags": ["Serverless", "Security", "Events", "Notifications"],
+    "links": {
+      "github": "https://github.com/",
+      "live": "",
+      "writeup": "https://github.com/"
+    }
+  },
+  {
+    "title": "Dynamic Blog + User Submissions",
+    "description": "A blog platform with structured submissions and storage patterns to demonstrate core AWS services.",
+    "focus": "Storage + databases + API patterns",
+    "aws": ["EC2", "RDS", "API Gateway", "Lambda", "S3", "EFS"],
+    "tags": ["Storage", "Databases", "Compute"],
+    "links": {
+      "github": "https://github.com/",
+      "live": "",
+      "writeup": "https://github.com/"
+    }
+  }
+]
