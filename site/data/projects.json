@@ -1,26 +1,41 @@
 [
   {
-    "title": "Real-Time Personal Tracker (AWS Location + Events)",
-    "description": "Location tracking + geofence events + alerts. Designed as a scalable, event-driven AWS app.",
-    "focus": "Event-driven architecture, notifications, auth",
-    "aws": ["Amazon Location Service", "EventBridge", "Lambda", "SNS", "Cognito", "CloudWatch"],
-    "tags": ["Serverless", "Security", "Events", "Notifications"],
+    "title": "AWS Static Portfolio Website",
+    "description": "Static portfolio site deployed on AWS using S3 (private origin), CloudFront (CDN), custom domain, and CI/CD. Includes a full build guide with screenshots and an architecture diagram.",
+    "focus": ["Static hosting", "CDN + HTTPS", "Custom domain", "CI/CD"],
+    "aws": ["S3", "CloudFront", "Route 53", "ACM", "IAM"],
+    "tags": ["Portfolio", "Static Website", "AWS", "CI/CD"],
+    "status": "Live",
+    "page": "./projects/aws-static-portfolio/index.html",
     "links": {
-      "github": "https://github.com/",
-      "live": "",
-      "writeup": "https://github.com/"
+      "build guide": "./projects/aws-static-portfolio/index.html",
+      "live": "https://lenojay.com",
+      "github": "https://github.com/LenoJay/AWS-Cloud-Portfolio-Website"
     }
   },
   {
-    "title": "Dynamic Blog + User Submissions",
-    "description": "A blog platform with structured submissions and storage patterns to demonstrate core AWS services.",
-    "focus": "Storage + databases + API patterns",
-    "aws": ["EC2", "RDS", "API Gateway", "Lambda", "S3", "EFS"],
-    "tags": ["Storage", "Databases", "Compute"],
+    "title": "Real-Time Personal Tracker Web App",
+    "description": "A web app where users share location with trusted groups, triggering alerts when entering/exiting geofences.",
+    "focus": ["Compute & Networking", "Event-Driven", "Notifications"],
+    "aws": ["Amazon Location Service", "Lambda", "EventBridge", "SNS", "Cognito", "DynamoDB"],
+    "tags": ["Geo", "Serverless", "Alerts"],
+    "status": "In progress",
+    "page": "https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio/tree/main/Project1_PersonalTracker",
     "links": {
-      "github": "https://github.com/",
-      "live": "",
-      "writeup": "https://github.com/"
+      "github": "https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio",
+      "writeup": "https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio/tree/main/Project1_PersonalTracker"
+    }
+  },
+  {
+    "title": "AI Mood Tracker & Mindset Coach",
+    "description": "Tracks mood/wellness, analyzes sentiment, and generates motivational insights and weekly summaries.",
+    "focus": ["AI/ML", "User Insights", "Personalization"],
+    "aws": ["Lex", "Comprehend", "Personalize", "SageMaker"],
+    "tags": ["AI", "Sentiment", "Wellness"],
+    "status": "Planned",
+    "page": "https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio",
+    "links": {
+      "github": "https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio"
     }
   }
 ]

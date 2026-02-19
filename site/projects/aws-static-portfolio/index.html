@@ -1,0 +1,2317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AWS Static Portfolio Website — Case Study</title>
+  <meta name="description" content="How I built and deployed my AWS static portfolio website (S3 + CloudFront + Route 53 + ACM + CI/CD)." />
+  <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+
+ <link rel="stylesheet" href="../../css/styles.css" />
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <nav class="nav">
+      <div class="brand">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <a href="../../index.html#projects" class="brand-link">← Back to Portfolio</a>
+      </div>
+
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#steps">Build Steps</a>
+        <a href="#diagram">Architecture</a>
+        <button id="themeToggle" class="btn btn-ghost" type="button" aria-label="Toggle theme">Theme</button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="container">
+    <section class="section" id="overview">
+      <div class="section-head reveal">
+        <h1>AWS Static Portfolio Website</h1>
+        <p>Case study + rebuild instructions.</p>
+      </div>
+
+      <div class="card reveal">
+        <p><strong>What this is:</strong> A static portfolio site hosted on AWS with a private bucket behind CloudFront, custom domain, and CI/CD.</p>
+        <p><strong>What recruiters should notice:</strong> secure origin access, HTTPS, DNS, and automated deployment.</p>
+      </div>
+    </section>
+
+    <section class="section" id="steps">
+      <div class="section-head reveal">
+        <h2>Build Steps</h2>
+        <p>Everything required to recreate this project.</p>
+      </div>
+
+      <div class="card reveal">
+        <div class="card reveal">
+
+  <!-- START: Local screenshots gallery -->
+  <div class="steps-gallery">
+
+    <figure>
+      <img src="./img/1-portfolio-diagram.png" alt="AWS static portfolio architecture diagram" loading="lazy">
+      <figcaption>Architecture diagram (overall AWS setup).</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./img/2-create-repo.png" alt="Create or open the GitHub repository" loading="lazy">
+      <figcaption>Repo setup (GitHub repository created/opened).</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./img/3-gitclone.png" alt="Clone repository (method 1)" loading="lazy">
+      <figcaption>Clone the repo (method 1).</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./img/4-gitclone2.png" alt="Clone repository (method 2)" loading="lazy">
+      <figcaption>Clone the repo (method 2).</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./img/5-folder-structure.png" alt="Folder structure under site/" loading="lazy">
+      <figcaption>Create the folder structure under <code>site/</code>.</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./img/6-example-file.png" alt="Example file created" loading="lazy">
+      <figcaption>Create the initial HTML/CSS/JS files.</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./img/7-source-control.png" alt="VS Code Source Control view" loading="lazy">
+      <figcaption>Source Control in VS Code (staging changes).</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./img/8-updated-repo.png" alt="Updated repository view" loading="lazy">
+      <figcaption>Repo updated after commit/push.</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./img/9-create-bucket.png" alt="Create S3 bucket step 1" loading="lazy">
+      <figcaption>Create the S3 bucket (step 1).</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./img/10-create-bucket2.png" alt="Create S3 bucket step 2" loading="lazy">
+      <figcaption>Create the S3 bucket (step 2).</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./img/11-upload-files-to-bucket.png" alt="Upload site files to S3" loading="lazy">
+      <figcaption>Upload site files to S3.</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./img/12-files-uploaded-to-bucket.png" alt="Files visible in S3 bucket" loading="lazy">
+      <figcaption>Confirm files are in the bucket.</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./img/13-register-domain.png" alt="Register domain step 1" loading="lazy">
+      <figcaption>Domain setup (step 1).</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./img/14-register-domain2.png" alt="Register domain step 2" loading="lazy">
+      <figcaption>Domain setup (step 2).</figcaption>
+    </figure>
+
+    <figure>
+      <img src="./img/15-request-certificate.png" alt="Request certificate" loading="lazy">
+      <figcaption>Request the certificate.</figcaption>
+    </figure>
+
+      <figure>
+            <img src="./img/16-request-certificate2.png" alt="ACM certificate request (continued)" loading="lazy">
+            <figcaption>16 — Continue the ACM certificate request (domain + validation method).</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/17-create-dns-records.png" alt="Create DNS validation records" loading="lazy">
+            <figcaption>17 — Create DNS validation records so ACM can verify you own the domain.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/18-hosted-zone-details.png" alt="Route 53 hosted zone details" loading="lazy">
+            <figcaption>18 — Verify the Route 53 hosted zone and record set details.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/19-cloudfront-wizard.png" alt="CloudFront create distribution wizard" loading="lazy">
+            <figcaption>19 — Start the CloudFront “Create distribution” wizard.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/20-cloudfront-oac-settings.png" alt="CloudFront OAC settings" loading="lazy">
+            <figcaption>20 — Configure CloudFront Origin Access Control (OAC) for private S3 access.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/21-cloudfront-oac-settings2.png" alt="CloudFront OAC settings continued" loading="lazy">
+            <figcaption>21 — Confirm OAC settings / finalize the origin security configuration.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/22-bucket-policy.png" alt="S3 bucket policy for CloudFront OAC" loading="lazy">
+            <figcaption>22 — Apply the S3 bucket policy that allows CloudFront to read objects (private origin).</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/23-bucket-policy2.png" alt="S3 bucket policy verification" loading="lazy">
+            <figcaption>23 — Double-check the bucket policy was saved correctly.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/24-distribution-page.png" alt="CloudFront distribution page" loading="lazy">
+            <figcaption>24 — CloudFront distribution overview page (domain name + status).</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/25-edit-distribution.png" alt="Edit CloudFront distribution" loading="lazy">
+            <figcaption>25 — Edit CloudFront distribution settings (as needed).</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/26-edit-distribution2.png" alt="Edit CloudFront distribution continued" loading="lazy">
+            <figcaption>26 — Continue editing distribution settings (behaviors / HTTPS / etc.).</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/27-error-response.png" alt="CloudFront custom error response" loading="lazy">
+            <figcaption>27 — Add a CloudFront custom error response for SPA routing (404 handling).</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/28-error-response2.png" alt="Custom error response settings continued" loading="lazy">
+            <figcaption>28 — Configure the SPA error response mapping (details screen).</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/29-error-response3.png" alt="Custom error response saved" loading="lazy">
+            <figcaption>29 — Confirm the custom error response is created and listed.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/30-alias.png" alt="Route 53 alias record to CloudFront" loading="lazy">
+            <figcaption>30 — Create the Route 53 Alias A record pointing to CloudFront.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/31-alias2.png" alt="Route 53 alias record continued" loading="lazy">
+            <figcaption>31 — Create/confirm the Alias record configuration details.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/32-alias3.png" alt="Route 53 alias record confirmation" loading="lazy">
+            <figcaption>32 — Confirm the Alias record was created successfully.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/33-alias4.png" alt="Alias records list" loading="lazy">
+            <figcaption>33 — Verify the Alias records appear correctly in the hosted zone.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/34-invalidation.png" alt="Create CloudFront invalidation" loading="lazy">
+            <figcaption>34 — Create a CloudFront invalidation so the newest files are served immediately.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/35-invalidation2.png" alt="CloudFront invalidation status" loading="lazy">
+            <figcaption>35 — Confirm invalidation status completed.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/36-create-github-provider.png" alt="Create GitHub OIDC provider" loading="lazy">
+            <figcaption>36 — Create the GitHub OIDC identity provider in IAM.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/37-create-github-provider2.png" alt="OIDC provider details" loading="lazy">
+            <figcaption>37 — Verify OIDC provider details after creation.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/38-deploy-permission-policy.png" alt="Deploy permission policy" loading="lazy">
+            <figcaption>38 — Create/confirm the IAM permission policy used by GitHub Actions deploy role.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/39-create-githubactions-role.png" alt="Create GitHub Actions IAM role" loading="lazy">
+            <figcaption>39 — Create the IAM role for GitHub Actions (assumed via OIDC).</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/40-create-githubactions-role2.png" alt="Role trust policy conditions" loading="lazy">
+            <figcaption>40 — Configure the role trust policy / OIDC conditions (repo + branch constraints).</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/41-create-githubactions-role3.png" alt="Attach policies to role" loading="lazy">
+            <figcaption>41 — Attach the deployment permission policy to the role and review.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/42-github-secrets-and-variables.png" alt="GitHub secrets and variables" loading="lazy">
+            <figcaption>42 — Open GitHub Actions Secrets and Variables for the repository.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/43-github-secret.png" alt="Add GitHub secret" loading="lazy">
+            <figcaption>43 — Add required GitHub Secret(s) used by the workflow.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/44-github-variable.png" alt="Add GitHub variable" loading="lazy">
+            <figcaption>44 — Add required GitHub Variable(s) used by the workflow.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/45-githubactions-deployyml-file.png" alt="deploy.yml workflow file" loading="lazy">
+            <figcaption>45 — Create the GitHub Actions workflow file: <code>.github/workflows/deploy.yml</code>.</figcaption>
+          </figure>
+
+          <figure>
+            <img src="./img/46-verify-cicd-success.png" alt="Verify GitHub Actions workflow success" loading="lazy">
+            <figcaption>46 — Verify the workflow run succeeds (green checks) and the site updates.</figcaption>
+          </figure>
+
+  </div>
+  <!-- END: Local screenshots gallery -->
+
+  <!-- wpbody-content (Outer HTML) -->
+  <div id="wpcontent">
+    ...
+
+        <!-- wpbody-content (Outer HTML) -->
+         <div id="wpcontent">
+
+		<div id="wpadminbar" class="nojq" style="">
+						<div class="quicklinks" id="wp-toolbar" role="navigation" aria-label="Toolbar">
+				<ul role="menu" id="wp-admin-bar-root-default" class="ab-top-menu"><li role="group" id="wp-admin-bar-menu-toggle"><a class="ab-item" role="menuitem" href="#" aria-expanded="false"><span class="ab-icon" aria-hidden="true"></span><span class="screen-reader-text">Menu</span></a></li><li role="group" id="wp-admin-bar-wpcom-logo" class="menupop"><a class="ab-item" role="menuitem" aria-expanded="false" href="https://wordpress.com/sites?origin_site_id=28083831&amp;origin_admin_bar=wpcom"><span class="ab-icon" aria-hidden="true"></span><span class="screen-reader-text">All Sites</span></a><div class="ab-sub-wrapper"><ul role="menu" aria-label="All Sites" id="wp-admin-bar-wpcom-logo-default" class="ab-submenu"><li role="group" id="wp-admin-bar-wpcom-sites"><a class="ab-item" role="menuitem" href="https://wordpress.com/sites?origin_site_id=28083831&amp;origin_admin_bar=wpcom">Sites</a></li><li role="group" id="wp-admin-bar-wpcom-domains"><a class="ab-item" role="menuitem" href="https://wordpress.com/domains/manage?origin_site_id=28083831&amp;origin_admin_bar=wpcom">Domains</a></li></ul></div></li><li role="group" id="wp-admin-bar-site-name" class="menupop"><a class="ab-item" role="menuitem" aria-expanded="false" href="https://lenoj94.wordpress.com/">lenoj94</a><div class="ab-sub-wrapper"><ul role="menu" aria-label="lenoj94" id="wp-admin-bar-site-name-default" class="ab-submenu"><li role="group" id="wp-admin-bar-view-site"><a class="ab-item" role="menuitem" href="https://lenoj94.wordpress.com/">Visit Site</a></li></ul><ul role="menu" aria-label="lenoj94" id="wp-admin-bar-site-plan" class="ab-submenu"><li role="group" id="wp-admin-bar-site-plan-badge"><div class="ab-item ab-empty-item" role="menuitem"><a class="wp-admin-bar__site-info" href="https://wordpress.com/plans/lenoj94.wordpress.com">
+								<span class="wp-admin-bar__site-info-label">Plan</span>
+								<span class="wp-admin-bar__info-badges">Free</span>
+							</a></div></li></ul></div></li><li role="group" id="wp-admin-bar-comments"><a class="ab-item" role="menuitem" href="https://lenoj94.wordpress.com/wp-admin/edit-comments.php"><span class="ab-icon" aria-hidden="true"></span><span class="ab-label awaiting-mod pending-count count-0" aria-hidden="true">0</span><span class="screen-reader-text comments-in-moderation-text">0 Comments in moderation</span></a></li><li role="group" id="wp-admin-bar-new-content" class="menupop"><a class="ab-item" role="menuitem" aria-expanded="false" href="/wp-admin/post-new.php?post_type=post"><span class="ab-icon" aria-hidden="true"></span><span class="ab-label">New</span></a><div class="ab-sub-wrapper"><ul role="menu" aria-label="New" id="wp-admin-bar-new-content-default" class="ab-submenu"><li role="group" id="wp-admin-bar-new-post"><a class="ab-item" role="menuitem" href="/wp-admin/post-new.php?post_type=post">Post</a></li><li role="group" id="wp-admin-bar-new-media"><a class="ab-item" role="menuitem" href="https://lenoj94.wordpress.com/wp-admin/media-new.php">Media</a></li><li role="group" id="wp-admin-bar-new-page"><a class="ab-item" role="menuitem" href="https://lenoj94.wordpress.com/wp-admin/post-new.php?post_type=page">Page</a></li><li role="group" id="wp-admin-bar-new-user"><a class="ab-item" role="menuitem" href="https://wordpress.com/people/new/lenoj94.wordpress.com">User</a></li></ul></div></li><li role="group" id="wp-admin-bar-view"><a class="ab-item" role="menuitem" href="https://lenoj94.wordpress.com/2026/02/13/1624/">View Post</a></li></ul><ul role="menu" id="wp-admin-bar-top-secondary" class="ab-top-secondary ab-top-menu"><li role="group" id="wp-admin-bar-reader" class="wp-admin-bar-reader"><a class="ab-item" role="menuitem" href="https://wordpress.com/reader?origin_site_id=28083831"><span class="ab-icon" title="Read the blogs and topics you follow" aria-hidden="true"></span><span class="ab-label">Reader</span></a></li><li role="group" id="wp-admin-bar-notes" class="menupop bell"><a class="ab-item" role="menuitem" href="https://wordpress.com/notifications"><span title="Manage your notifications"><span id="wpnt-notes-unread-count" class="wpnt-loading wpn-unread"></span><span class="noticon noticon-bell ab-icon"></span></span></a><div id="wpnt-notes-panel2" style="display:none" lang="en" dir="ltr" class="wide"><iframe style="" id="wpnt-notes-iframe2" frameborder="0" allowtransparency="true" scrolling="no" src="https://wordpress.com/widgets/notifications/?v=dbca8a3d418&amp;locale=en#https://lenoj94.wordpress.com/wp-admin/post.php?post=1624&amp;action=edit" class="wide intrinsic-ignore"></iframe></div></li><li role="group" id="wp-admin-bar-my-account" class="menupop with-avatar"><a class="ab-item" role="menuitem" aria-expanded="false" href="https://lenoj94.wordpress.com/wp-admin/profile.php">Howdy, <span class="display-name">lenoj94</span><img referrerpolicy="no-referrer" alt="lenoj94's avatar" src="https://0.gravatar.com/avatar/fadd59a0ba43433d2aea07962056f0e22fe0b44adf4c66e33f3b452c65791d24?s=26&amp;d=identicon&amp;r=G" srcset="https://0.gravatar.com/avatar/fadd59a0ba43433d2aea07962056f0e22fe0b44adf4c66e33f3b452c65791d24?s=26&amp;d=identicon&amp;r=G 1x, https://0.gravatar.com/avatar/fadd59a0ba43433d2aea07962056f0e22fe0b44adf4c66e33f3b452c65791d24?s=39&amp;d=identicon&amp;r=G 1.5x, https://0.gravatar.com/avatar/fadd59a0ba43433d2aea07962056f0e22fe0b44adf4c66e33f3b452c65791d24?s=52&amp;d=identicon&amp;r=G 2x, https://0.gravatar.com/avatar/fadd59a0ba43433d2aea07962056f0e22fe0b44adf4c66e33f3b452c65791d24?s=78&amp;d=identicon&amp;r=G 3x, https://0.gravatar.com/avatar/fadd59a0ba43433d2aea07962056f0e22fe0b44adf4c66e33f3b452c65791d24?s=104&amp;d=identicon&amp;r=G 4x" class="avatar avatar-26" height="26" width="26" loading="lazy" decoding="async"></a><div class="ab-sub-wrapper"><ul role="menu" aria-label="Howdy, lenoj94" id="wp-admin-bar-user-actions" class="ab-submenu"><li role="group" id="wp-admin-bar-user-info"><a class="ab-item" role="menuitem" href="https://lenoj94.wordpress.com/wp-admin/profile.php"><img referrerpolicy="no-referrer" alt="lenoj94's avatar" src="https://0.gravatar.com/avatar/fadd59a0ba43433d2aea07962056f0e22fe0b44adf4c66e33f3b452c65791d24?s=64&amp;d=identicon&amp;r=G" srcset="https://0.gravatar.com/avatar/fadd59a0ba43433d2aea07962056f0e22fe0b44adf4c66e33f3b452c65791d24?s=64&amp;d=identicon&amp;r=G 1x, https://0.gravatar.com/avatar/fadd59a0ba43433d2aea07962056f0e22fe0b44adf4c66e33f3b452c65791d24?s=96&amp;d=identicon&amp;r=G 1.5x, https://0.gravatar.com/avatar/fadd59a0ba43433d2aea07962056f0e22fe0b44adf4c66e33f3b452c65791d24?s=128&amp;d=identicon&amp;r=G 2x, https://0.gravatar.com/avatar/fadd59a0ba43433d2aea07962056f0e22fe0b44adf4c66e33f3b452c65791d24?s=192&amp;d=identicon&amp;r=G 3x, https://0.gravatar.com/avatar/fadd59a0ba43433d2aea07962056f0e22fe0b44adf4c66e33f3b452c65791d24?s=256&amp;d=identicon&amp;r=G 4x" class="avatar avatar-64" height="64" width="64" loading="lazy" decoding="async"><span class="display-name">lenoj94</span><span class="display-name edit-profile">Edit Profile</span></a></li><li role="group" id="wp-admin-bar-logout"><a class="ab-item" role="menuitem" href="https://lenoj94.wordpress.com/wp-login.php?action=logout&amp;_wpnonce=83e2fabe6e">Log Out</a></li></ul><ul role="menu" aria-label="Howdy, lenoj94" id="wp-admin-bar-wpcom-account" class="ab-sub-secondary ab-submenu"><li role="group" id="wp-admin-bar-my-wpcom-account"><a class="ab-item" role="menuitem" href="https://wordpress.com/me/account?origin_site_id=28083831&amp;origin_admin_bar=wpcom"><span class="button wpcom-button">My <span class="wpcom-logo"></span> WordPress.com Account</span></a></li></ul></div></li></ul>			</div>
+		</div>
+
+		
+<script type="text/javascript">
+/* <![CDATA[ */
+( function() {
+	function init() {
+		// debug bar extra
+		window.clickDebugLink = function( parentId, obj ) {
+			if ( ! window.jQuery ) {
+				return;
+			}
+			var $ = window.jQuery;
+
+			$( '#' + parentId ).children( 'div' ).hide();
+
+			document.getElementById( obj.href.substr( obj.href.indexOf( '#' ) + 1 ) ).style.display = 'block';
+			$( obj.href.substr( obj.href.indexOf( '#' ) ) ).show()
+
+			$( obj ).parent().addClass( 'current' ).siblings( 'li' ).removeClass( 'current' );
+
+			return false;
+		};
+	}
+
+	if ( document.readyState !== 'loading' ) {
+		init();
+	} else {
+		document.addEventListener( 'DOMContentLoaded', init );
+	}
+} )();
+/* ]]> */
+</script>
+			<style>#contextual-help-link-wrap { display: none; }</style>
+		
+<div id="wpbody" role="main">
+
+<div id="wpbody-content">
+		<div id="screen-meta" class="metabox-prefs">
+
+			<div id="contextual-help-wrap" class="hidden no-sidebar" tabindex="-1" aria-label="Contextual Help Tab">
+				<div id="contextual-help-back"></div>
+				<div id="contextual-help-columns">
+					<div class="contextual-help-tabs">
+						<ul>
+						
+							<li id="tab-link-wpcom-feedback" class="active">
+								<a href="#tab-panel-wpcom-feedback" aria-controls="tab-panel-wpcom-feedback">
+									Get Help								</a>
+							</li>
+													</ul>
+					</div>
+
+					
+					<div class="contextual-help-tabs-wrap">
+						
+							<div id="tab-panel-wpcom-feedback" class="help-tab-content active">
+								<div id="quicklookup"><p>Choose a Category:</p><ul class="supportcats"><li><a onclick="fbshow('appearance')">Appearance</a></li>
+<li><a onclick="fbshow('comments')">Comments</a></li>
+<li><a onclick="fbshow('configuration')">Configuration</a></li>
+<li><a onclick="fbshow('general')">General</a></li>
+<li><a onclick="fbshow('languages')">Languages</a></li>
+<li><a onclick="fbshow('links')">Links</a></li>
+<li><a onclick="fbshow('media')">Media</a></li>
+<li><a onclick="fbshow('following')">Following</a></li>
+<li><a onclick="fbshow('tools')">Tools</a></li>
+<li><a onclick="fbshow('policies-safety')">Policies &amp; Safety</a></li>
+<li><a onclick="fbshow('traffic')">Traffic</a></li>
+<li><a onclick="fbshow('upgrades')">Upgrades</a></li>
+<li><a onclick="fbshow('users')">Users</a></li>
+<li><a onclick="fbshow('widgets-sidebars')">Widgets &amp; Sidebars</a></li>
+<li><a onclick="fbshow('writing-editing')">Writing &amp; Editing</a></li>
+</ul><br class="clear"><p><a href="http://learn.wordpress.com/">Check out <em>Learn WordPress</em>, chock full of tutorials and walkthroughs to make you a WordPress pro and impress your friends</a>.</p></div><style>#contextual-help-wrap div.hbl_pal_main_width {width: 100% !important;}</style><p></p><div id="olark-box-container"></div><p></p>							</div>
+												</div>
+				</div>
+			</div>
+				</div>
+				<div id="screen-meta-links">
+					<div id="contextual-help-link-wrap" class="hide-if-no-js screen-meta-toggle">
+			<button type="button" id="contextual-help-link" class="button show-settings" aria-controls="contextual-help-wrap" aria-expanded="false">Help</button>
+			</div>
+				</div>
+		
+<div class="block-editor">
+	<h1 class="screen-reader-text hide-if-no-js">Edit Post</h1>
+	<div id="editor" class="block-editor__container hide-if-no-js"><div class=""><div class="editor-editor-interface edit-post-layout is-mode-text interface-interface-skeleton"><div class="interface-interface-skeleton__editor"><div class="admin-ui-navigable-region interface-interface-skeleton__header" aria-label="Editor top bar" role="region" tabindex="-1" style="opacity: 1; margin-top: 0px;"><div class="editor-header edit-post-header"><div class="editor-header__toolbar" style="transform: none;"><div role="toolbar" aria-orientation="horizontal" aria-label="Document tools" class="components-accessible-toolbar editor-document-tools edit-post-header-toolbar is-unstyled"><div class="editor-document-tools__left"><button type="button" aria-pressed="false" id=":r1:" aria-expanded="false" data-toolbar-item="true" class="components-button components-toolbar-button editor-document-tools__inserter-toggle is-primary is-compact has-icon" aria-label="Block Inserter" data-active-item="true" aria-disabled="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M11 12.5V17.5H12.5V12.5H17.5V11H12.5V6H11V11H6V12.5H11Z"></path></svg></button><button type="button" id=":r3:" data-toolbar-item="true" aria-disabled="true" class="components-button editor-history__undo is-next-40px-default-size is-compact has-icon" aria-label="Undo" tabindex="-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M18.3 11.7c-.6-.6-1.4-.9-2.3-.9H6.7l2.9-3.3-1.1-1-4.5 5L8.5 16l1-1-2.7-2.7H16c.5 0 .9.2 1.3.5 1 1 1 3.4 1 4.5v.3h1.5v-.2c0-1.5 0-4.3-1.5-5.7z"></path></svg></button><button type="button" id=":r5:" data-toolbar-item="true" aria-disabled="true" class="components-button editor-history__redo is-next-40px-default-size is-compact has-icon" aria-label="Redo" tabindex="-1"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M15.6 6.5l-1.1 1 2.9 3.3H8c-.9 0-1.7.3-2.3.9-1.4 1.5-1.4 4.2-1.4 5.6v.2h1.5v-.3c0-1.1 0-3.5 1-4.5.3-.3.7-.5 1.3-.5h9.2L14.5 15l1.1 1.1 4.6-4.6-4.6-5z"></path></svg></button><button type="button" aria-pressed="false" id=":r7:" aria-expanded="false" data-toolbar-item="true" class="components-button components-toolbar-button editor-document-tools__document-overview-toggle is-compact has-icon" aria-label="Document Overview" tabindex="-1" aria-disabled="true"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" width="24" height="24" aria-hidden="true" focusable="false"><path d="M3 6h11v1.5H3V6Zm3.5 5.5h11V13h-11v-1.5ZM21 17H10v1.5h11V17Z"></path></svg></button></div></div></div><div class="editor-header__settings" style="transform: none;"><a href="https://lenoj94.wordpress.com/2026/02/13/1624/" target="_blank" class="components-button is-compact has-icon" aria-label="View Post"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M19.5 4.5h-7V6h4.44l-5.97 5.97 1.06 1.06L18 7.06v4.44h1.5v-7Zm-13 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-3H17v3a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h3V5.5h-3Z"></path></svg></a><a href="https://lenoj94.wordpress.com/2026/02/13/1624/?preview=true" target="wp-preview-1624" class="components-button editor-header__post-preview-button is-compact">Preview<span data-wp-c16t="true" data-wp-component="VisuallyHidden" class="components-visually-hidden css-0 e19lxcc00" style="border: 0px; clip: rect(1px, 1px, 1px, 1px); clip-path: inset(50%); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; overflow-wrap: normal;">(opens in a new tab)</span></a><div class="interface-pinned-items"><button type="button" aria-pressed="false" aria-controls="jetpack-sidebar:jetpack" aria-expanded="false" aria-disabled="false" class="components-button is-compact has-icon" aria-label="Jetpack"><svg width="24" height="24" viewBox="0 0 32 32" class="jetpack-logo" aria-hidden="true" focusable="false"><path class="jetpack-logo__icon-circle" fill="#069e08" stroke="transparent" stroke-width="0" d="M16,0C7.2,0,0,7.2,0,16s7.2,16,16,16s16-7.2,16-16S24.8,0,16,0z"></path><polygon class="jetpack-logo__icon-triangle" fill="#fff" points="15,19 7,19 15,3"></polygon><polygon class="jetpack-logo__icon-triangle" fill="#fff" points="17,29 17,13 25,13"></polygon></svg></button><button type="button" aria-pressed="false" aria-controls="jetpack-subscriptions:jetpack-newsletter-settings-sidebar" aria-expanded="false" aria-disabled="false" class="components-button is-compact has-icon" aria-label="Newsletter"><svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.332 5.748c-1.03-.426-2.06.607-1.632 1.636l1.702 3.93 7.481.575c.123.01.123.19 0 .2l-7.483.575-1.7 3.909c-.429 1.029.602 2.062 1.632 1.636l12.265-5.076c1.03-.426 1.03-1.884 0-2.31L6.332 5.748Z"></path></svg></button><button type="button" aria-pressed="false" aria-controls="edit-post:document" aria-expanded="false" aria-disabled="false" class="components-button is-compact has-icon" aria-label="Settings"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path fill-rule="evenodd" clip-rule="evenodd" d="M18 4H6c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm-4 14.5H6c-.3 0-.5-.2-.5-.5V6c0-.3.2-.5.5-.5h8v13zm4.5-.5c0 .3-.2.5-.5.5h-2.5v-13H18c.3 0 .5.2.5.5v12z"></path></svg></button></div><button type="button" aria-disabled="true" class="components-button editor-post-publish-button editor-post-publish-button__button is-primary is-compact">Save</button><div class="components-dropdown components-dropdown-menu" tabindex="-1"><button type="button" aria-haspopup="true" aria-expanded="false" class="components-button components-dropdown-menu__toggle is-compact has-icon" aria-label="Options"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M13 19h-2v-2h2v2zm0-6h-2v-2h2v2zm0-6h-2V5h2v2z"></path></svg></button></div></div></div></div><div class="interface-interface-skeleton__body"><div class="admin-ui-navigable-region interface-interface-skeleton__content" aria-label="Editor content" role="region" tabindex="-1"><div class="components-notice-list components-editor-notices__pinned"></div><div class="components-notice-list components-editor-notices__dismissible"></div><div class="editor-text-editor"><div class="editor-text-editor__toolbar"><h2>Editing code</h2><button type="button" class="components-button is-next-40px-default-size is-tertiary">Exit code editor</button></div><div class="editor-text-editor__body" style="position: relative;"><div class="components-base-control components-textarea-control wp-block wp-block-post-title block-editor-block-list__block editor-post-title editor-post-title__input rich-text is-raw-text css-qy3gpb ej5x27r4"><div class="components-base-control__field css-1chyuqs ej5x27r3"><label data-wp-c16t="true" data-wp-component="VisuallyHidden" for="inspector-textarea-control-1" class="components-visually-hidden css-0 e19lxcc00" style="border: 0px; clip: rect(1px, 1px, 1px, 1px); clip-path: inset(50%); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; overflow-wrap: normal;">Add title</label><textarea class="components-textarea-control__input css-12codhd e1w5nnrk0" id="inspector-textarea-control-1" rows="1" placeholder="Add title" autocomplete="off" dir="auto" style="height: 111px;">My First Project: How I built this Portfolio Website on AWS</textarea></div></div><label data-wp-c16t="true" data-wp-component="VisuallyHidden" for="post-content-1" class="components-visually-hidden css-0 e19lxcc00" style="border: 0px; clip: rect(1px, 1px, 1px, 1px); clip-path: inset(50%); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; width: 1px; overflow-wrap: normal;">Type text or HTML</label><textarea autocomplete="off" dir="auto" class="editor-post-text-editor" id="post-content-1" placeholder="Start writing with text or HTML" rows="1" style="overflow-x: hidden; overflow-wrap: break-word; height: 464599px;">&lt;!-- wp:group {"layout":{"type":"flex","orientation":"vertical"}} --&gt;
+&lt;div class="wp-block-group"&gt;&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;(Or how to build a static website in general)&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;&lt;/div&gt;
+&lt;!-- /wp:group --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;This guide documents &lt;strong&gt;the exact build path I used &lt;/strong&gt;to publish a clean, public portfolio website with a professional AWS architecture:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:group {"layout":{"type":"flex","orientation":"vertical"}} --&gt;
+&lt;div class="wp-block-group"&gt;&lt;!-- wp:heading {"level":3} --&gt;
+&lt;h3 class="wp-block-heading"&gt;The AWS services used:&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;S3&lt;/strong&gt; stores the website files&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;CloudFront&lt;/strong&gt; serves the site publicly over HTTPS&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;ACM&lt;/strong&gt; provides the SSL/TLS certificate (must be in &lt;strong&gt;us-east-1&lt;/strong&gt; for CloudFront)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Route 53&lt;/strong&gt; hosts DNS and points your domain to CloudFront&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;GitHub Actions (OIDC)&lt;/strong&gt; deploys automatically on every push to &lt;code&gt;main&lt;/code&gt; (no long-lived AWS keys)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/div&gt;
+&lt;!-- /wp:group --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;Architecture Overview&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:image {"id":1739,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/portfolio-diagram.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/portfolio-diagram.png?w=1024" alt="" class="wp-image-1739" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;How the Architecture works&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading {"level":3} --&gt;
+&lt;h3 class="wp-block-heading"&gt;User request flow (runtime)&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;A user types your domain (e.g., &lt;code&gt;lenojay.com&lt;/code&gt;) in their browser.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Route 53&lt;/strong&gt; answers the DNS query and points the domain to &lt;strong&gt;CloudFront&lt;/strong&gt;.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;The browser connects to &lt;strong&gt;CloudFront over HTTPS&lt;/strong&gt; using the &lt;strong&gt;ACM certificate&lt;/strong&gt; (issued in &lt;code&gt;us-east-1&lt;/code&gt;, which CloudFront requires).&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;CloudFront checks its cache&lt;/strong&gt;:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;If it already has the file cached (like &lt;code&gt;index.html&lt;/code&gt;, CSS, JS), it serves it immediately from the nearest edge location.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;If it doesn’t, CloudFront fetches it from the origin.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;The origin is your &lt;strong&gt;S3 bucket&lt;/strong&gt;, but it stays &lt;strong&gt;private&lt;/strong&gt;. CloudFront is allowed to access it using &lt;strong&gt;Origin Access Control (OAC)&lt;/strong&gt;, so the public cannot browse the bucket directly.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;CloudFront returns the content to the user, improving speed, security, and global performance.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:heading {"level":3} --&gt;
+&lt;h3 class="wp-block-heading"&gt;CI/CD deployment flow (updates)&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;You push changes to your &lt;strong&gt;GitHub repository&lt;/strong&gt;.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;GitHub Actions&lt;/strong&gt; runs a workflow automatically.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;The workflow assumes an &lt;strong&gt;IAM role via OIDC&lt;/strong&gt; (so you don’t store AWS access keys in GitHub).&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;The role permissions allow:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Uploading your updated site files to &lt;strong&gt;S3&lt;/strong&gt; (deploy/sync).&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Optionally triggering a &lt;strong&gt;CloudFront cache invalidation&lt;/strong&gt; so users see the latest version immediately.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;After that, visiting the site shows the updated content.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;Prerequisites&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;An AWS account&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;A GitHub account&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Visual Studio Code&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;An AI Agent&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:separator --&gt;
+&lt;hr class="wp-block-separator has-alpha-channel-opacity" /&gt;
+&lt;!-- /wp:separator --&gt;
+
+&lt;!-- wp:heading {"level":1} --&gt;
+&lt;h1 class="wp-block-heading"&gt;Phase 1 — Repo setup (GitHub + VS Code)&lt;/h1&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading {"level":4} --&gt;
+&lt;h4 class="wp-block-heading"&gt;GitHub stores your website source files and gives you version history. It also becomes your “single source of truth” so every change is tracked and reversible.&lt;/h4&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;1.1 Create the GitHub repository&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Go to GitHub → your profile → &lt;strong&gt;Repositories&lt;/strong&gt; → &lt;strong&gt;New&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Repository name: &lt;code&gt;AWS-Cloud-Portfolio-Website&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Set visibility (Public recommended for portfolio)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Add &lt;strong&gt;README&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Add &lt;strong&gt;.gitignore&lt;/strong&gt;: &lt;code&gt;Node&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Create repository&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 1.1 — New GitHub repo settings]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1638,"width":"668px","height":"auto","aspectRatio":"1.0308836966453465","sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large is-resized"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image.png?w=768" alt="" class="wp-image-1638" style="aspect-ratio:1.0308836966453465;width:668px;height:auto" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;1.2 Open the repo in VS Code&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Open &lt;strong&gt;VS Code&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Press &lt;strong&gt;Ctrl + Shift + P&lt;/strong&gt; to open the Command Palette&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Type: &lt;code&gt;Git: Clone&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Git: Clone&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 1.2 — VS Code Command Palette showing “Git: Clone”]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1652,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-133509.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-133509.png?w=1024" alt="" class="wp-image-1652" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:list {"ordered":true,"start":5} --&gt;
+&lt;ol start="5" class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Paste your repo URL:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;https://github.com/LenoJay/AWS-Cloud-Portfolio-Website&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Press &lt;strong&gt;Enter&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 1.2.1 — VS Code prompt: select folder to clone into]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1650,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-133642.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-133642.png?w=1024" alt="" class="wp-image-1650" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:list {"ordered":true,"start":7} --&gt;
+&lt;ol start="7" class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;VS Code asks where to clone it:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;choose the folder on your PC where you keep projects&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;When cloning finishes, click &lt;strong&gt;Open&lt;/strong&gt; when VS Code prompts “Open the cloned repository?”&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:group {"layout":{"type":"flex","orientation":"vertical"}} --&gt;
+&lt;div class="wp-block-group"&gt;&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;For an automated option, within VS Code open the Terminal (Ctrl+') and enter:&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;git &lt;/strong&gt;clone https://github.com/LenoJay/AWS-Cloud-Portfolio-Website.git&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;cd &lt;/strong&gt;AWS-Cloud-Portfolio-Website&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;&lt;/div&gt;
+&lt;!-- /wp:group --&gt;
+
+&lt;!-- wp:separator --&gt;
+&lt;hr class="wp-block-separator has-alpha-channel-opacity" /&gt;
+&lt;!-- /wp:separator --&gt;
+
+&lt;!-- wp:heading {"level":1} --&gt;
+&lt;h1 class="wp-block-heading"&gt;Phase 2 — Build the static site locally (VS Code)&lt;/h1&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading {"level":4} --&gt;
+&lt;h4 class="wp-block-heading"&gt;VS Code is your editor and file manager. Using it keeps folder structure consistent and makes GitHub commits simple even for beginners.&lt;/h4&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;2.1 Create the website folder structure&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Inside VS Code Explorer (left sidebar):&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Create a folder at the repo root called:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;site&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Inside &lt;code&gt;site&lt;/code&gt;, create folders:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;css&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;js&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;data&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;assets (&lt;/code&gt;optional — images, PDFs, icons)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Inside the created folders, create:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;site/css/&lt;/code&gt; create &lt;code&gt;styles.css&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;site/js/&lt;/code&gt; create &lt;code&gt;main.js&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;site/data/&lt;/code&gt; create &lt;code&gt;projects.json&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Inside &lt;code&gt;site&lt;/code&gt;, create files:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;404.html&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;index.html&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;robots.txt&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;sitemap.xml&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;(.gitignore &amp;amp; README.md are there by default)&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:heading {"level":4} --&gt;
+&lt;h4 class="wp-block-heading"&gt;&lt;strong&gt;Starter files (&lt;code&gt;index.html&lt;/code&gt;, CSS/JS, JSON data)&lt;/strong&gt;&lt;br&gt;These files form the “static website bundle.” Keeping everything under a &lt;code&gt;/site&lt;/code&gt; folder makes deployments safer because you only upload what should be public.&lt;/h4&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:group {"layout":{"type":"flex","orientation":"vertical"}} --&gt;
+&lt;div class="wp-block-group"&gt;&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Your final structure:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 2.1 — VS Code Explorer showing the exact folder structure]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;&lt;/div&gt;
+&lt;!-- /wp:group --&gt;
+
+&lt;!-- wp:image {"id":1808,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-34.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-34.png?w=342" alt="" class="wp-image-1808" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;For an automated option, within VS Code open the Terminal (Ctrl+') from the repo root &amp;amp; enter:&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;mkdir &lt;/strong&gt;-p site/{css,js,data,assets} .github/workflows&lt;br&gt;&lt;strong&gt;touch &lt;/strong&gt;site/index.html site/404.html site/robots.txt site/sitemap.xml site/css/styles.css site/js/main.js site/data/projects.json&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;2.2 Create the website files (AI Agent- ChatGPT, Claude etc.)&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading {"level":4} --&gt;
+&lt;h4 class="wp-block-heading"&gt;AI speeds up boilerplate (like YAML workflows or IAM JSON), but you must still verify placeholders like bucket name, region, and distribution ID before using anything.&lt;/h4&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Using an AI Agent, make a prompt such as "add working code into the files." The exact design is up to you, but the key is:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;index.html&lt;/code&gt; loads&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;it references &lt;code&gt;css/styles.css&lt;/code&gt; and &lt;code&gt;js/main.js&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;your site folder is self-contained&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;After editing:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;In VS Code, click &lt;strong&gt;File → Save All&lt;/strong&gt; (or save each file)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Confirm your files are not empty&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 2.2 — EXAMPLE: projects.json file]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1654,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-9.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-9.png?w=1024" alt="" class="wp-image-1654" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;2.3 Commit and push to GitHub&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;In VS Code, click the &lt;strong&gt;Source Control&lt;/strong&gt; icon (left sidebar)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Write commit message: &lt;code&gt;Initial commit&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Commit&lt;/strong&gt; (checkmark icon)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Sync Changes&lt;/strong&gt; / &lt;strong&gt;Push&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 2.3 — VS Code Source Control commit + push]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1661,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-153456.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-153456.png?w=377" alt="" class="wp-image-1661" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;&lt;strong&gt;For an automated option, within VS Code open the Terminal (Ctrl+') &amp;amp; enter:&lt;/strong&gt;&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;git &lt;/strong&gt;add .&lt;br&gt;&lt;strong&gt;git &lt;/strong&gt;commit -m "Your commit message here"&lt;br&gt;&lt;strong&gt;git &lt;/strong&gt;push origin main&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;br&gt;&lt;strong&gt;[Screenshot 2.3.1 — GitHub repo showing the site/ folder in Code tab]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1663,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-153631.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-153631.png?w=927" alt="" class="wp-image-1663" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;After connecting VS Code (local) to your GitHub, every commit &amp;amp; push will reflect in your reepository.&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:separator --&gt;
+&lt;hr class="wp-block-separator has-alpha-channel-opacity" /&gt;
+&lt;!-- /wp:separator --&gt;
+
+&lt;!-- wp:heading {"level":1} --&gt;
+&lt;h1 class="wp-block-heading"&gt;Phase 3 — Create the S3 origin bucket and upload site files&lt;/h1&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading {"level":4} --&gt;
+&lt;h4 class="wp-block-heading"&gt;S3 stores the website files. In your setup it’s a &lt;strong&gt;private origin&lt;/strong&gt;, meaning users never access S3 directly—CloudFront does.&lt;/h4&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;3.1 Create the S3 bucket (private)&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Open the AWS Management Console → search &lt;strong&gt;S3&lt;/strong&gt; in the search bar → open&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Create bucket&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Bucket name: &lt;em&gt;(your chosen name — commonly the domain name, e.g. &lt;code&gt;lenojay.com&lt;/code&gt;)&lt;/em&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;AWS Region: &lt;strong&gt;Europe (Frankfurt) eu-central-1&lt;/strong&gt;&lt;em&gt; (I used Frankfurt)&lt;/em&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Object Ownership:&lt;/strong&gt; &lt;em&gt;ACLs disabled (recommended)&lt;/em&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Block Public Access:&lt;/strong&gt; &lt;em&gt;Keep ON (all boxes checked)&lt;/em&gt; (this works because CloudFront uses OAC for private access)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Bucket Versioning:&lt;/strong&gt; &lt;em&gt;Disabled&lt;/em&gt; (fine for a simple static site)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Default encryption:&lt;/strong&gt; &lt;em&gt;Enabled (SSE-S3 / Amazon S3 managed keys)&lt;/em&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Create bucket&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 3.1 — S3 create bucket screen]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1665,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-155644.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-155644.png?w=1024" alt="" class="wp-image-1665" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:image {"id":1666,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-155711.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-155711.png?w=1024" alt="" class="wp-image-1666" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;3.2 Upload the website files to the S3 bucket&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;S3 → open your bucket&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Upload&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Add files&lt;/strong&gt;&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;select: &lt;code&gt;site/index.html&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;site/404.html&lt;/code&gt; (optional but recommended)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;site/robots.txt&lt;/code&gt; (optional)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;site/sitemap.xml&lt;/code&gt; (optional)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Add folder&lt;/strong&gt; → select:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;select: &lt;code&gt;site/css&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;site/js&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;site/data&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Upload&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 3.2 — S3 upload screen showing files + folders selected]&lt;/strong&gt;&lt;br&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1671,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-161325.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-161325.png?w=1024" alt="" class="wp-image-1671" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;You want this final structure &lt;strong&gt;at the root of the bucket&lt;/strong&gt;:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 3.2.1 — S3 bucket objects view showing files + folders]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1669,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-10.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-10.png?w=1024" alt="" class="wp-image-1669" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:separator --&gt;
+&lt;hr class="wp-block-separator has-alpha-channel-opacity" /&gt;
+&lt;!-- /wp:separator --&gt;
+
+&lt;!-- wp:heading {"level":1,"fontSize":"large"} --&gt;
+&lt;h1 class="wp-block-heading has-large-font-size"&gt;Phase 4 — Route 53 (Domain + Hosted Zone)&lt;/h1&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading {"level":4} --&gt;
+&lt;h4 class="wp-block-heading"&gt;Route 53 registers your domain and controls where it points. DNS records are how &lt;code&gt;yourdomain.com&lt;/code&gt; maps to CloudFront.&lt;/h4&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;If you already own a domain elsewhere, you can skip registration and only create/point DNS records in Route 53 (or keep DNS at your registrar).&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;4.1 Register a domain in Route 53&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Route 53 → Registered domains&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Register domains&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Enter a domain name → &lt;strong&gt;Add to cart&lt;/strong&gt; → checkout → contact details → payment&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 4.1 — Route 53 — Register a domain name]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1776,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-31.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-31.png?w=1024" alt="" class="wp-image-1776" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:image {"id":1777,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-32.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-32.png?w=730" alt="" class="wp-image-1777" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:list {"ordered":true,"start":4} --&gt;
+&lt;ol start="4" class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;After purchase: Route 53 automatically creates a hosted zone for DNS (you’ll verify in the next steps)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:separator --&gt;
+&lt;hr class="wp-block-separator has-alpha-channel-opacity" /&gt;
+&lt;!-- /wp:separator --&gt;
+
+&lt;!-- wp:heading {"level":1} --&gt;
+&lt;h1 class="wp-block-heading"&gt;Phase 5 — ACM (SSL/TLS Certificate)&lt;/h1&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading {"level":4} --&gt;
+&lt;h4 class="wp-block-heading"&gt;ACM issues your site’s TLS certificate so HTTPS works on your custom domain. CloudFront requires the certificate to exist in &lt;strong&gt;us-east-1&lt;/strong&gt;, even if your S3 bucket is in another region.&lt;/h4&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;5.1 Request a SSL/TLS certificate&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Switch regions to &lt;strong&gt;us-east-1&lt;/strong&gt; for ACM. This is required to obtain a certifcate for CloudFront.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;In AWS console region selector (top-right), switch to:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;US East (N. Virginia) us-east-1&lt;/strong&gt; &lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Search &lt;strong&gt;Certificate Manager (ACM)&lt;/strong&gt; → open&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Request&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Choose &lt;strong&gt;Public certificate&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Add domain names:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;yourdomain.com&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;www.yourdomain.com&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Leave all &lt;strong&gt;default &lt;/strong&gt;options&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Request&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 5.1 — ACM request in us-east-1 with root + www]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1676,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-163103.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-163103.png?w=1024" alt="" class="wp-image-1676" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:image {"id":1680,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-163407.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-163407.png?w=1024" alt="" class="wp-image-1680" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;5.2 Create the DNS validation records in Route 53 (ACM)&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;In ACM, open your new certificate&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;In “Domains” section, click &lt;strong&gt;Create records in Route 53&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Confirm it creates CNAME validation records for both:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;yourdomain.com&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;www.yourdomain.com&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Create records&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Wait until ACM status becomes &lt;strong&gt;Issued&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 5.2 — ACM “Create records in Route 53”]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1682,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-12.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-12.png?w=1024" alt="" class="wp-image-1682" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;br&gt;&lt;strong&gt;[Screenshot 5.2.1 — Route 53 hosted zone showing the CNAME validation records]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1684,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-164141.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-164141.png?w=1024" alt="" class="wp-image-1684" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:separator --&gt;
+&lt;hr class="wp-block-separator has-alpha-channel-opacity" /&gt;
+&lt;!-- /wp:separator --&gt;
+
+&lt;!-- wp:heading {"level":1} --&gt;
+&lt;h1 class="wp-block-heading"&gt;&lt;strong&gt;Phase 6 — CloudFront (OAC + DNS records)&lt;/strong&gt;&lt;/h1&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading {"level":4} --&gt;
+&lt;h4 class="wp-block-heading"&gt;CloudFront is a CDN that sits in front of S3 and serves your site globally and securely.&lt;/h4&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;6.1 Create the CloudFront distribution (wizard)&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;AWS Console → search &lt;strong&gt;CloudFront&lt;/strong&gt; → open&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Create distribution&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Choose a plan&lt;/strong&gt;:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;select &lt;strong&gt;Free&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Next&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Get started&lt;/strong&gt;:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Choose Distribution name&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Choose &lt;strong&gt;Single website or app&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Next&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Specify origin&lt;/strong&gt;:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Origin type: &lt;strong&gt;Amazon S3&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;select your S3 bucket as origin&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;default settings&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Next&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Enable security&lt;/strong&gt;:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;skip WAF&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Next&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Get SSL/TLS certificate&lt;/strong&gt;:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;choose &lt;strong&gt;Existing certificate&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;select your ACM cert (Issued, us-east-1)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Next&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Create distribution&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 6.1 — CloudFront wizard: plan selection]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1685,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-165137.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-165137.png?w=396" alt="" class="wp-image-1685" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;6.2 Configure Origin Access Control (OAC) + attach S3 bucket policy&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading {"level":4} --&gt;
+&lt;h4 class="wp-block-heading"&gt;&lt;strong&gt;OAC (Origin Access Control)&lt;/strong&gt; locks S3 down so &lt;strong&gt;only CloudFront&lt;/strong&gt; can read the files. This prevents people from bypassing CloudFront and hitting your bucket directly.&lt;/h4&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;CloudFront → Distributions → click your Distribution ID&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Go to &lt;strong&gt;Origins&lt;/strong&gt; tab&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Select the S3 origin → &lt;strong&gt;Edit&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;In &lt;strong&gt;Origin access&lt;/strong&gt;&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Set it to &lt;strong&gt;Origin access control (OAC)&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Select the existing origin access control in the drop- down box&nbsp;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Save changes&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 6.2 — OAC settings]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1817,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-35.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-35.png?w=1024" alt="" class="wp-image-1817" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:image {"id":1819,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-36.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-36.png?w=1024" alt="" class="wp-image-1819" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Now attach the bucket policy:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Open the &lt;strong&gt;S3 bucket&lt;/strong&gt; → &lt;strong&gt;Permissions&lt;/strong&gt; tab&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Scroll to &lt;strong&gt;Bucket policy&lt;/strong&gt; → &lt;strong&gt;Edit&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;In CloudFront, there is usually a &lt;strong&gt;Copy policy&lt;/strong&gt; / “bucket policy” prompt for OAC. Paste that into the bucket policy editor.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Save changes&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 6.2.1 — S3 bucket policy]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1821,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-37.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-37.png?w=1024" alt="" class="wp-image-1821" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:image {"id":1823,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-38.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-38.png?w=1024" alt="" class="wp-image-1823" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;6.3 Finalize the distribution settings after creation&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Because the wizard UI didn’t expose some settings, you set them &lt;strong&gt;after&lt;/strong&gt; creation.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list {"ordered":true,"start":1} --&gt;
+&lt;ol start="1" class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;CloudFront → Distributions → click your Distribution &lt;strong&gt;ID&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Under General → &lt;strong&gt;Settings&lt;/strong&gt; → Click &lt;strong&gt;Edit&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 6.3 — Distribution page]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1693,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-165608-1.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-165608-1.png?w=1024" alt="" class="wp-image-1693" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:list {"ordered":true,"start":3} --&gt;
+&lt;ol start="3" class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Find &lt;strong&gt;Alternate domain name(s)&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Add:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;yourdomain.com&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;www.yourdomain.com&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Find &lt;strong&gt;Custom SSL/TLS certificate&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Select the same ACM certificate (Issued)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Find &lt;strong&gt;Default root object&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Enter: &lt;code&gt;index.html&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click Save changes&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 6.3.1 — Default root object set to index.html &amp;amp; add &lt;strong&gt;Alternate domain names + cert selected in CloudFront&lt;/strong&gt;]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1689,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-13.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-13.png?w=1024" alt="" class="wp-image-1689" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:heading {"level":3} --&gt;
+&lt;h3 class="wp-block-heading"&gt;6.3.2 Configure Cache behavior&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading {"level":4} --&gt;
+&lt;h4 class="wp-block-heading"&gt;&lt;strong&gt;Cache behavior (HTTPS redirect, compression)&lt;/strong&gt; is is where you force HTTPS, keep allowed methods minimal, and enable compression. It improves security and performance.&lt;/h4&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;CloudFront distribution ID → &lt;strong&gt;Behaviors&lt;/strong&gt; &lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Select the default behavior&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Edit&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Set:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Compression&lt;/strong&gt;: Yes&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Viewer protocol policy&lt;/strong&gt;: Redirect HTTP to HTTPS&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Allowed HTTP methods&lt;/strong&gt;: GET, HEAD&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Response headers policy&lt;/strong&gt;: SecurityHeadersPolicy&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Everything else: &lt;strong&gt;leave default&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Save&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 6.3.3 — Cache behavior settings]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1695,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-14.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-14.png?w=1024" alt="" class="wp-image-1695" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:heading {"level":3} --&gt;
+&lt;h3 class="wp-block-heading"&gt;6.3.4 Create custom error pages&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading {"level":4} --&gt;
+&lt;h4 class="wp-block-heading"&gt;&lt;strong&gt;SPA error page (403/404 → &lt;code&gt;/index.html&lt;/code&gt;)&lt;/strong&gt;&lt;br&gt;Single Page Apps (SPA) use client-side routing, so &lt;code&gt;/projects&lt;/code&gt; isn’t a real file in S3. Mapping 403/404 to &lt;code&gt;index.html&lt;/code&gt; prevents “blank page / access denied” when users refresh deep links.&lt;/h4&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;CloudFront → your Distribution → Error pages &lt;strong&gt;→&lt;/strong&gt; Create custom error responses&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;Error response&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;HTTP error code: 403: Forbidden&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Error caching minimum TTL: &lt;strong&gt;0&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Custom error response: Yes&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Response page path: &lt;code&gt;/index.html&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;HTTP response code: &lt;strong&gt;200&lt;/strong&gt; OK&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click create custom error response&lt;br&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Repeat custom error response for &lt;strong&gt;404&lt;/strong&gt; (same settings)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 6.3.4 — Create custom error response]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1766,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-28.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-28.png?w=1007" alt="" class="wp-image-1766" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:image {"id":1768,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-29.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-29.png?w=1008" alt="" class="wp-image-1768" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 6.3.4 — Custom error responses created]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1772,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-30.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-30.png?w=1005" alt="" class="wp-image-1772" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;6.4 Point your domain to CloudFront (Route 53 Alias records)&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading {"level":4} --&gt;
+&lt;h4 class="wp-block-heading"&gt;Alias A records point your domain directly at CloudFront without using an IP address. This is the standard AWS-native way to connect a domain to a distribution.&lt;/h4&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;You created Alias records and selected the CloudFront distribution as the endpoint.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;AWS Console → &lt;strong&gt;Route 53&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Hosted zones&lt;/strong&gt; → open your domain zone&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:heading {"level":3} --&gt;
+&lt;h3 class="wp-block-heading"&gt;6.4.1 Create the root record (A Alias)&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Create record&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Record name: &lt;em&gt;(leave blank)&lt;/em&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Record type: &lt;strong&gt;A&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Toggle &lt;strong&gt;Alias&lt;/strong&gt; = ON&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Route traffic to: &lt;strong&gt;Alias to CloudFront distribution&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Choose your distribution&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Create&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 6.4.1 — Route 53 A Alias for root → CloudFront]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1697,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-172031.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-172031.png?w=1024" alt="" class="wp-image-1697" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:image {"id":1698,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-15.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-15.png?w=1024" alt="" class="wp-image-1698" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:heading {"level":3} --&gt;
+&lt;h3 class="wp-block-heading"&gt;6.4.2 Create the www record (A Alias)&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Create record&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Record name: &lt;code&gt;www&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Record type: &lt;strong&gt;A&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Alias = ON&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Alias to CloudFront distribution → select same distribution&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Create&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:group {"layout":{"type":"flex","orientation":"vertical"}} --&gt;
+&lt;div class="wp-block-group"&gt;&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;(Optional but recommended if you want IPv6):&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Repeat as &lt;strong&gt;AAAA Alias&lt;/strong&gt; records for both root and www&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/div&gt;
+&lt;!-- /wp:group --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 6.4.2 — Route 53 A Alias for www → CloudFront]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1700,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-16.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-16.png?w=1024" alt="" class="wp-image-1700" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:image {"id":1701,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-172133.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-172133.png?w=1024" alt="" class="wp-image-1701" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;6.5 Create a CloudFront Invalidation&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading {"level":4} --&gt;
+&lt;h4 class="wp-block-heading"&gt;Invalidation tells CloudFront to fetch fresh versions from S3 instead of serving cached files. It’s most useful right after updates. (to refresh CloudFront cache).&lt;/h4&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Go to &lt;strong&gt;AWS Console&lt;/strong&gt;.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;In the search bar, type &lt;strong&gt;CloudFront&lt;/strong&gt; → open &lt;strong&gt;Amazon CloudFront&lt;/strong&gt;.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;In the left sidebar, click &lt;strong&gt;Distributions&lt;/strong&gt;.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click the distribution ID for your site (the row that corresponds to your domain).&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click the &lt;strong&gt;Invalidations&lt;/strong&gt; tab.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Create invalidation&lt;/strong&gt;.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Under &lt;strong&gt;Object paths&lt;/strong&gt;, enter:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;/*&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Create invalidation&lt;/strong&gt;.&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 6.5.1 — Create a CloudFront invalidation]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1796,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-190608-1.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-190608-1.png?w=997" alt="" class="wp-image-1796" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:image {"id":1798,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-190625.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-190625.png?w=998" alt="" class="wp-image-1798" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;6.6 Test the CloudFront domain&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;CloudFront → Distributions&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Copy the &lt;strong&gt;Distribution domain name&lt;/strong&gt; (looks like &lt;code&gt;dxxxx.cloudfront.net&lt;/code&gt;)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Open in browser:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;https://dxxxx.cloudfront.net&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 6.6— CloudFront domain name highlighted]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1703,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-172328.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-172328.png?w=1024" alt="" class="wp-image-1703" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Then test your real domain:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;https://yourdomain.com&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;https://www.yourdomain.com&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Once they both load, you are in the green.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:separator --&gt;
+&lt;hr class="wp-block-separator has-alpha-channel-opacity" /&gt;
+&lt;!-- /wp:separator --&gt;
+
+&lt;!-- wp:heading {"level":1} --&gt;
+&lt;h1 class="wp-block-heading"&gt;Phase 7 — CI/CD (GitHub Actions)&lt;/h1&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading {"level":4} --&gt;
+&lt;h4 class="wp-block-heading"&gt;&lt;strong&gt;GitHub Actions (CI/CD)&lt;/strong&gt; runs automatically when you push to &lt;code&gt;main&lt;/code&gt;. It deploys your &lt;code&gt;/site&lt;/code&gt; folder to S3 so you don’t manually upload files every time.&lt;/h4&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;7.1 Add GitHub OIDC Provider in IAM&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:heading {"level":4} --&gt;
+&lt;h4 class="wp-block-heading"&gt;OIDC lets GitHub prove its identity to AWS without storing long-term AWS keys in GitHub. The IAM role + policy restrict exactly what GitHub Actions is allowed to do.&lt;/h4&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;AWS Console → search &lt;strong&gt;IAM&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Left menu → &lt;strong&gt;Identity providers&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click &lt;strong&gt;Add provider&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Type: &lt;strong&gt;OpenID Connect&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Provider URL:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;https://token.actions.githubusercontent.com&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Audience:&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;sts.amazonaws.com&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Add provider&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 7.1 — IAM identity provider added]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1706,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-172848.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-172848.png?w=1024" alt="" class="wp-image-1706" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:image {"id":1708,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-17.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-17.png?w=1024" alt="" class="wp-image-1708" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;7.2 Create deploy permissions policy (S3 sync)&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;IAM → &lt;strong&gt;Policies&lt;/strong&gt; → &lt;strong&gt;Create policy&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Choose &lt;strong&gt;JSON&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Using AI, create a JSON policy&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Copy and paste into the JSON field below:&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 7.2 — IAM policy JSON screen]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1710,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-173250.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-173250.png?w=959" alt="" class="wp-image-1710" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Replace the placeholders: &lt;code&gt;&lt;strong&gt;lenojay.com&lt;/strong&gt;&lt;/code&gt; to your s3 bucket name and &lt;strong&gt;E2UJKVPL74KACI &lt;/strong&gt;to your distribution ID.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list {"ordered":true,"start":4} --&gt;
+&lt;ol start="4" class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Policy name: &lt;code&gt;PortfolioDeployPolicy&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Create policy&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;7.3 Create the IAM role for GitHub Actions (Web identity)&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;IAM → &lt;strong&gt;Roles&lt;/strong&gt; → &lt;strong&gt;Create role&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Select trusted entity&lt;/strong&gt;&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Trusted entity: &lt;strong&gt;Web identity&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Identity provider: &lt;strong&gt;token.actions.githubusercontent.com&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Audience: sts.amazonaws.com&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;GitHub organization: &lt;code&gt;LenoJay&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;GitHub repository: &lt;code&gt;AWS-Cloud-Portfolio-Website&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;GitHub branch: &lt;code&gt;main&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click Next&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 7.3 — IAM create role screen with GitHub org/repo/branch fields]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1714,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-174105.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-174105.png?w=1024" alt="" class="wp-image-1714" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:list {"ordered":true,"start":3} --&gt;
+&lt;ol start="3" class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Add permissions&lt;/strong&gt;&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Permission policies: Attach the PortfolioDeployPolicy policy&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:image {"id":1716,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-174542.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-174542.png?w=1024" alt="" class="wp-image-1716" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:list {"ordered":true,"start":4} --&gt;
+&lt;ol start="4" class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;strong&gt;Name, review, and create&lt;/strong&gt;&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Role name: GitHubActions-PortfolioDeployRole&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Leave everything else default&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click Create role&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:image {"id":1721,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-175652.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-175652.png?w=1024" alt="" class="wp-image-1721" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;7.4 Add GitHub repo secrets + variables&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:group {"layout":{"type":"flex","orientation":"vertical"}} --&gt;
+&lt;div class="wp-block-group"&gt;&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 7.4 — GitHub Secrets + Variables screen]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;In GitHub repo:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Settings → &lt;strong&gt;Secrets and variables&lt;/strong&gt; → &lt;strong&gt;Actions&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:image {"id":1723,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-184416.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/screenshot-2026-02-12-184416.png?w=1024" alt="" class="wp-image-1723" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:list {"ordered":true,"start":2} --&gt;
+&lt;ol start="2" class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Click New repository secret&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:heading {"level":3} --&gt;
+&lt;h3 class="wp-block-heading"&gt;Secret&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Name: &lt;code&gt;AWS_ROLE_ARN&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Secret: arn:aws:iam::&amp;lt;ACCOUNT_ID&amp;gt;:role/GitHubActions-PortfolioDeployRole (found in IAM Role page)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:image {"id":1725,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-18.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-18.png?w=797" alt="" class="wp-image-1725" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Click Add secret&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:heading {"level":3} --&gt;
+&lt;h3 class="wp-block-heading"&gt;Variables&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list --&gt;
+&lt;ul class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;AWS_REGION&lt;/code&gt; = your region (eu-central-1)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;S3_BUCKET&lt;/code&gt; = your bucket name (lenojay.com)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;&lt;code&gt;CLOUDFRONT_DISTRIBUTION_ID&lt;/code&gt; =  your distribution ID (&lt;code&gt;E2UJKVPL74KACI&lt;/code&gt;) &lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ul&gt;
+&lt;!-- /wp:list --&gt;&lt;/div&gt;
+&lt;!-- /wp:group --&gt;
+
+&lt;!-- wp:image {"id":1727,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-20.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-20.png?w=785" alt="" class="wp-image-1727" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;Click Add variable&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;7.5 Create the GitHub Actions workflow file (&lt;code&gt;deploy.yml&lt;/code&gt;)&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;What this folder does:&lt;/strong&gt; &lt;code&gt;.github/workflows/&lt;/code&gt; is a special GitHub folder. Any workflow files placed here are automatically picked up by GitHub Actions.&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Create a folder at the repo root called &lt;code&gt;.github/workflows&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Inside &lt;code&gt;.github/workflows&lt;/code&gt; using AI, create the deploy.yml file:&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 7.5 — deploy.yml file]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1758,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-26.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-26.png?w=622" alt="" class="wp-image-1758" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:list {"ordered":true,"start":3} --&gt;
+&lt;ol start="3" class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Commit &amp;amp; push the file to main (same as step 2.3)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:heading --&gt;
+&lt;h2 class="wp-block-heading"&gt;7.6 Verify CI/CD success&lt;/h2&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;Verify deployments (GitHub Actions + S3 'Last modified' + Invalidations)&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:group {"layout":{"type":"flex","orientation":"vertical"}} --&gt;
+&lt;div class="wp-block-group"&gt;&lt;!-- wp:heading {"level":3} --&gt;
+&lt;h3 class="wp-block-heading"&gt;In GitHub&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;GitHub repo → &lt;strong&gt;Actions&lt;/strong&gt; tab&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Select latest run&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Confirm the workflow run is green&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;&lt;/div&gt;
+&lt;!-- /wp:group --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;[Screenshot 7.6 — GitHub Actions run green]&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:image {"id":1730,"sizeSlug":"large","linkDestination":"media"} --&gt;
+&lt;figure class="wp-block-image size-large"&gt;&lt;a href="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-21.png"&gt;&lt;img src="https://lenoj94.wordpress.com/wp-content/uploads/2026/02/image-21.png?w=1024" alt="" class="wp-image-1730" /&gt;&lt;/a&gt;&lt;/figure&gt;
+&lt;!-- /wp:image --&gt;
+
+&lt;!-- wp:group {"layout":{"type":"flex","orientation":"vertical"}} --&gt;
+&lt;div class="wp-block-group"&gt;&lt;!-- wp:group {"layout":{"type":"flex","orientation":"vertical"}} --&gt;
+&lt;div class="wp-block-group"&gt;&lt;!-- wp:heading {"level":3} --&gt;
+&lt;h3 class="wp-block-heading"&gt;In AWS&lt;/h3&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:group {"layout":{"type":"flex","orientation":"vertical"}} --&gt;
+&lt;div class="wp-block-group"&gt;&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;S3&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;S3 → your bucket → confirm object “Last modified” times updated&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;&lt;/div&gt;
+&lt;!-- /wp:group --&gt;&lt;/div&gt;
+&lt;!-- /wp:group --&gt;
+
+&lt;!-- wp:group {"layout":{"type":"flex","orientation":"vertical"}} --&gt;
+&lt;div class="wp-block-group"&gt;&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;strong&gt;CloudFront&lt;/strong&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;CloudFront → your distribution → &lt;strong&gt;Invalidations&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;You should see a new invalidation for &lt;code&gt;/*&lt;/code&gt; with status &lt;strong&gt;Completed&lt;/strong&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;&lt;/div&gt;
+&lt;!-- /wp:group --&gt;&lt;/div&gt;
+&lt;!-- /wp:group --&gt;
+
+&lt;!-- wp:separator --&gt;
+&lt;hr class="wp-block-separator has-alpha-channel-opacity" /&gt;
+&lt;!-- /wp:separator --&gt;
+
+&lt;!-- wp:heading {"level":1} --&gt;
+&lt;h1 class="wp-block-heading"&gt;Complete&lt;/h1&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:separator --&gt;
+&lt;hr class="wp-block-separator has-alpha-channel-opacity" /&gt;
+&lt;!-- /wp:separator --&gt;
+
+&lt;!-- wp:heading {"level":1} --&gt;
+&lt;h1 class="wp-block-heading"&gt;How you update the site now (automatic deployments)&lt;/h1&gt;
+&lt;!-- /wp:heading --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;From now on, your process is:&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;
+
+&lt;!-- wp:list {"ordered":true} --&gt;
+&lt;ol class="wp-block-list"&gt;&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Edit files in &lt;code&gt;site/&lt;/code&gt; locally (VS Code)&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Save&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Commit &amp;amp; push to &lt;code&gt;main&lt;/code&gt;&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;GitHub Actions runs automatically&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;S3 updates&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;
+
+&lt;!-- wp:list-item --&gt;
+&lt;li&gt;Site updates publicly&lt;/li&gt;
+&lt;!-- /wp:list-item --&gt;&lt;/ol&gt;
+&lt;!-- /wp:list --&gt;
+
+&lt;!-- wp:separator --&gt;
+&lt;hr class="wp-block-separator has-alpha-channel-opacity" /&gt;
+&lt;!-- /wp:separator --&gt;
+
+&lt;!-- wp:paragraph --&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;!-- /wp:paragraph --&gt;</textarea><div style="position: absolute; top: 120px; left: 24px; right: 24px; padding-bottom: 24px;"><div class="cm-editor ͼ1 ͼ2 ͼ4 ͼ13 ͼ14"><div class="cm-announced" aria-live="polite"></div><div tabindex="-1" class="cm-scroller"><div class="cm-gutters cm-gutters-before" aria-hidden="true" style="min-height: 146953px; position: sticky;"><div class="cm-gutter cm-lineNumbers"><div class="cm-gutterElement" style="height: 0px; visibility: hidden; pointer-events: none;">9999</div><div class="cm-gutterElement cm-activeLineGutter" style="height: 2648.95px; margin-top: 16px;">1</div></div><div class="cm-gutter cm-foldGutter"><div class="cm-gutterElement" style="height: 0px; visibility: hidden; pointer-events: none;"><span title="Unfold line">›</span></div><div class="cm-gutterElement cm-activeLineGutter" style="height: 2648.95px; margin-top: 16px;"></div></div></div><div spellcheck="false" autocorrect="off" autocapitalize="off" writingsuggestions="false" translate="no" contenteditable="true" class="cm-content cm-lineWrapping" role="textbox" aria-multiline="true" data-language="html" aria-placeholder="Type text or HTML" style="tab-size: 4;" aria-autocomplete="list"><div class="cm-activeLine cm-line"><span class="tok-comment">&lt;!-- wp:group {"layout":{"type":"flex","orientation":"vertical"}} --&gt;</span></div><div class="cm-gap" style="height: 144272px;"></div></div><div class="cm-layer cm-layer-above cm-cursorLayer" aria-hidden="true" style="z-index: 150; animation-duration: 1200ms; animation-name: cm-blink2;"><div class="cm-cursor cm-cursor-primary" style="left: 79.7812px; top: 2635.56px; height: 19px;"></div></div><div class="cm-layer cm-selectionLayer" aria-hidden="true" style="z-index: -2;"></div></div></div></div></div></div></div><div class="admin-ui-navigable-region interface-interface-skeleton__sidebar" aria-label="Editor settings" role="region" tabindex="-1"></div><div class="admin-ui-navigable-region interface-interface-skeleton__actions" aria-label="Editor publish" role="region" tabindex="-1"><div class="css-0 e19lxcc00"></div><div class="editor-layout__toggle-entities-saved-states-panel"><button type="button" aria-disabled="true" aria-expanded="false" aria-haspopup="dialog" class="components-button is-next-40px-default-size is-secondary">Open save panel</button></div></div></div></div></div><div style="display: none;"></div><div class="components-snackbar-list components-editor-notices__snackbar" tabindex="-1" data-testid="snackbar-list"></div></div></div>
+	<div id="metaboxes" class="hidden">
+			<form class="metabox-base-form">
+	<input type="hidden" id="_wpnonce" name="_wpnonce" value="b915c7c185"><input type="hidden" name="_wp_http_referer" value="/wp-admin/post.php?post=1624&amp;action=edit">	<input type="hidden" id="user-id" name="user_ID" value="27663066">
+	<input type="hidden" id="hiddenaction" name="action" value="editpost">
+	<input type="hidden" id="originalaction" name="originalaction" value="editpost">
+	<input type="hidden" id="post_type" name="post_type" value="post">
+	<input type="hidden" id="original_post_status" name="original_post_status" value="publish">
+	<input type="hidden" id="referredby" name="referredby" value="https://lenoj94.wordpress.com/wp-admin/edit.php?_gl=1%2A55zcm5%2A_gcl_au%2ANDExNjE4Njk2LjE3NzA4NDQ5ODg.">
+
+	<input type="hidden" name="_wp_original_http_referer" value="https://lenoj94.wordpress.com/wp-admin/edit.php?_gl=1%2A55zcm5%2A_gcl_au%2ANDExNjE4Njk2LjE3NzA4NDQ5ODg."><input type="hidden" id="post_ID" name="post_ID" value="1624"><input type="hidden" id="meta-box-order-nonce" name="meta-box-order-nonce" value="e7dc7e6f12"><input type="hidden" id="closedpostboxesnonce" name="closedpostboxesnonce" value="2d82706de2"><input type="hidden" id="samplepermalinknonce" name="samplepermalinknonce" value="10ed741261">	</form>
+	<form id="toggle-custom-fields-form" method="post" action="https://lenoj94.wordpress.com/wp-admin/post.php">
+		<input type="hidden" id="toggle-custom-fields-nonce" name="toggle-custom-fields-nonce" value="a932c4457f"><input type="hidden" name="_wp_http_referer" value="/wp-admin/post.php?post=1624&amp;action=edit">		<input type="hidden" name="action" value="toggle-custom-fields">
+	</form>
+			<form class="metabox-location-side" onsubmit="return false;">
+			<div id="poststuff" class="sidebar-open">
+				<div id="postbox-container-2" class="postbox-container">
+					<div id="side-sortables" class="meta-box-sortables"></div>				</div>
+			</div>
+		</form>
+			<form class="metabox-location-normal" onsubmit="return false;">
+			<div id="poststuff" class="sidebar-open">
+				<div id="postbox-container-2" class="postbox-container">
+					<div id="normal-sortables" class="meta-box-sortables"></div>				</div>
+			</div>
+		</form>
+			<form class="metabox-location-advanced" onsubmit="return false;">
+			<div id="poststuff" class="sidebar-open">
+				<div id="postbox-container-2" class="postbox-container">
+					<div id="advanced-sortables" class="meta-box-sortables"></div>				</div>
+			</div>
+		</form>
+		<script type="text/javascript">
+window._wpLoadBlockEditor.then( function() {
+		wp.data.dispatch( 'core/edit-post' ).setAvailableMetaBoxesPerLocation( {"side":[],"normal":[],"advanced":[]} );
+	} );
+</script>
+	</div>
+
+		<div class="wrap hide-if-js block-editor-no-js">
+		<h1 class="wp-heading-inline">Edit Post</h1><div class="notice notice-error"><p>The block editor requires JavaScript. Please enable JavaScript in your browser settings, or install the <a href="https://lenoj94.wordpress.com/wp-admin/update.php?action=install-plugin&amp;plugin=classic-editor&amp;_wpnonce=37f0077fc4">Classic Editor plugin</a>.</p></div>
+			</div>
+</div>
+
+<div class="clear"></div></div><!-- wpbody-content -->
+<div class="clear"></div></div><!-- wpbody -->
+<div class="clear"></div></div>
+      </div>
+    </section>
+
+    <section class="section" id="diagram">
+      <div class="section-head reveal">
+        <h2>Architecture</h2>
+        <p>High-level view of how the pieces connect.</p>
+      </div>
+
+      <div class="card reveal">
+        <p>Add your Lucidchart diagram image here (either hotlinked or stored locally).</p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p class="muted">© <span id="year"></span> • Built and hosted on AWS.</p>
+    </footer>
+  </main>
+
+  <script src="../../js/main.js" defer></script>
+</body>
+</html>
