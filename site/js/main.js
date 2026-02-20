@@ -1,17 +1,73 @@
-/* main.js — safe version (won’t crash if elements are missing) */
-
 "use strict";
 
-// ---------- Helpers ----------
-const $ = (sel, root = document) => root.querySelector(sel);
+/* ---------- helpers ---------- */
+const $ = (sel) => document.querySelector(sel);
 
-function setText(id, value) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = String(value);
+const state = {
+  activeTag: "All",
+  projects: [],
+};
+
+/* ---------- theme ---------- */
+function prefersLight() {
+  return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
 }
 
-function escapeHtml(str) {
-  return String(str ?? "")
+function applyTheme(theme) {
+  document.body.dataset.theme = theme;
+  localStorage.setItem("theme", theme);
+}
+
+function initTheme() {
+  const saved = localStorage.getItem("theme");
+  if (saved === "light" || saved === "dark") {
+    applyTheme(saved);
+  } else {
+    applyTheme(prefersLight() ? "light" : "dark");
+  }
+
+  const btn = $("#themeToggle");
+  if (btn) {
+    btn.addEventListener("click", () => {
+      const current = document.body.dataset.theme || "dark";
+      applyTheme(current === "dark" ? "light" : "dark");
+    });
+  }
+}
+
+/* ---------- reveal animations (makes .reveal visible) ---------- */
+function initRevealAnimations() {
+  const els = document.querySelectorAll(".reveal");
+
+  // If the browser doesn't support IntersectionObserver, just show everything.
+  if (!("IntersectionObserver" in window)) {
+    els.forEach((e) => e.classList.add("in-view"));
+    return;
+  }
+
+  const io = new IntersectionObserver(
+    (entries, obs) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in-view");
+          obs.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.12 }
+  );
+
+  els.forEach((e) => io.observe(e));
+
+  // Failsafe: after 1.2s, show anything still hidden
+  setTimeout(() => {
+    document.querySelectorAll(".reveal").forEach((e) => e.classList.add("in-view"));
+  }, 1200);
+}
+
+/* ---------- safe HTML ---------- */
+function escapeHtml(str = "") {
+  return String(str)
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
@@ -19,240 +75,154 @@ function escapeHtml(str) {
     .replaceAll("'", "&#039;");
 }
 
-// ---------- App State ----------
-const state = {
-  projects: [],
-  query: "",
-  tag: "all",
-};
+/* ---------- tags + filters ---------- */
+function uniqTags(projects) {
+  const set = new Set();
+  projects.forEach((p) => (p.tags || []).forEach((t) => set.add(String(t))));
+  return ["All", ...Array.from(set).sort((a, b) => a.localeCompare(b))];
+}
 
-// ---------- Theme ----------
-function initTheme() {
-  const btn = document.getElementById("themeToggle");
-  if (!btn) return;
+function renderFilters(tags) {
+  const wrap = $("#filters");
+  if (!wrap) return;
 
-  const root = document.documentElement;
+  wrap.innerHTML = "";
+  tags.forEach((tag) => {
+    const btn = document.createElement("button");
+    btn.className = "chip";
+    btn.type = "button";
+    btn.textContent = tag;
+    btn.setAttribute("aria-pressed", tag === state.activeTag ? "true" : "false");
 
-  const saved = localStorage.getItem("theme");
-  if (saved === "light" || saved === "dark") {
-    root.setAttribute("data-theme", saved);
-  }
+    btn.addEventListener("click", () => {
+      state.activeTag = tag;
+      renderFilters(tags);
+      renderProjects();
+    });
 
-  btn.addEventListener("click", () => {
-    const cur = root.getAttribute("data-theme") || "dark";
-    const next = cur === "dark" ? "light" : "dark";
-    root.setAttribute("data-theme", next);
-    localStorage.setItem("theme", next);
+    wrap.appendChild(btn);
   });
 }
 
-// ---------- Reveal animations (failsafe so content never stays hidden) ----------
-function initReveal() {
-  const items = Array.from(document.querySelectorAll(".reveal"));
-  if (!items.length) return;
-
-  const makeVisible = (el) => el.classList.add("in-view");
-
-  // If IntersectionObserver isn’t available, just show everything.
-  if (!("IntersectionObserver" in window)) {
-    items.forEach(makeVisible);
-    return;
-  }
-
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        if (e.isIntersecting) {
-          makeVisible(e.target);
-          io.unobserve(e.target);
-        }
-      }
-    },
-    { threshold: 0.12 }
-  );
-
-  items.forEach((el) => io.observe(el));
-
-  // Failsafe: if anything didn’t get observed properly, show it anyway after a moment.
-  setTimeout(() => {
-    items.filter((el) => !el.classList.contains("in-view")).forEach(makeVisible);
-  }, 1200);
+function projectMatches(p) {
+  if (state.activeTag === "All") return true;
+  return (p.tags || []).includes(state.activeTag);
 }
 
-// ---------- Data ----------
-async function loadProjects() {
-  // Works on:
-  // - local live server: http://127.0.0.1:5500/site/index.html  -> fetch ./data/projects.json
-  // - deployed root:      https://lenojay.com/                  -> fetch ./data/projects.json
-  const url = "data/projects.json";
-
-  const res = await fetch(url, { cache: "no-store" });
-  if (!res.ok) throw new Error(`Failed to load ${url} (${res.status})`);
-
-  const json = await res.json();
-  if (!Array.isArray(json)) throw new Error("projects.json must be an array.");
-  return json;
-}
-
-// ---------- Filtering ----------
-function getAllTags(projects) {
-  const tags = new Set();
-  for (const p of projects) {
-    (p.tags || []).forEach((t) => tags.add(String(t)));
-  }
-  return Array.from(tags).sort((a, b) => a.localeCompare(b));
-}
-
-function applyFilters(projects) {
-  const q = state.query.trim().toLowerCase();
-  const tag = state.tag;
-
-  return projects.filter((p) => {
-    const inTag =
-      tag === "all" ||
-      (Array.isArray(p.tags) && p.tags.map(String).includes(tag));
-
-    if (!q) return inTag;
-
-    const hay = [
-      p.title,
-      p.description,
-      p.focus,
-      ...(p.aws || []),
-      ...(p.tags || []),
-    ]
-      .join(" ")
-      .toLowerCase();
-
-    return inTag && hay.includes(q);
-  });
-}
-
-// ---------- Render: Tag dropdown ----------
-function renderTagFilter(projects) {
-  const sel = document.getElementById("tagFilter");
-  if (!sel) return;
-
-  const tags = getAllTags(projects);
-
-  sel.innerHTML =
-    `<option value="all">All tags</option>` +
-    tags.map((t) => `<option value="${escapeHtml(t)}">${escapeHtml(t)}</option>`).join("");
-
-  sel.value = state.tag;
-}
-
-// ---------- Render: Project cards ----------
-function renderProjects(filtered) {
-  const grid = document.getElementById("projectsGrid");
+/* ---------- render projects ---------- */
+function renderProjects() {
+  const grid = $("#projectsGrid");
   if (!grid) return;
 
-  // ✅ Don’t crash if #projectCount doesn’t exist
-  setText("projectCount", filtered.length);
+  const filtered = state.projects.filter(projectMatches);
 
   grid.innerHTML = filtered
     .map((p) => {
-      const aws = Array.isArray(p.aws) ? p.aws : [];
-      const tags = Array.isArray(p.tags) ? p.tags : [];
-      const links = Array.isArray(p.links) ? p.links : [];
+      const tagsHtml = (p.tags || [])
+        .map((t) => `<span class="tag">${escapeHtml(t)}</span>`)
+        .join("");
 
-      const liveLink = links.find((l) => (l?.label || "").toLowerCase().includes("live"));
-      const repoLink = links.find((l) => (l?.label || "").toLowerCase().includes("repo"));
-      const blogLink = links.find((l) => (l?.label || "").toLowerCase().includes("blog") || (l?.label || "").toLowerCase().includes("guide"));
+      const focus = Array.isArray(p.focus) ? p.focus.join(", ") : (p.focus || "—");
+      const aws = Array.isArray(p.aws) ? p.aws.join(", ") : (p.aws || "—");
 
-      // Choose a primary click target (if you’ve set one in projects.json)
-      // If none, we’ll just keep the buttons.
-      const primaryHref = p.href || (blogLink?.href ?? "");
+      const links = [
+        p.links?.github
+          ? `<a class="btn btn-ghost" href="${p.links.github}" target="_blank" rel="noreferrer">GitHub</a>`
+          : "",
+        p.links?.live
+          ? `<a class="btn" href="${p.links.live}" target="_blank" rel="noreferrer">Live</a>`
+          : "",
+        p.links?.writeup
+          ? `<a class="btn btn-ghost" href="${p.links.writeup}" target="_blank" rel="noreferrer">Case Study</a>`
+          : "",
+        p.links?.["build guide"]
+          ? `<a class="btn btn-ghost" href="${p.links["build guide"]}">Build Guide</a>`
+          : "",
+      ].join("");
 
-      const clickableClass = primaryHref ? " project-card is-clickable" : "";
-      const hrefAttr = primaryHref ? ` data-href="${escapeHtml(primaryHref)}"` : "";
+      const pageHref = p.page ? String(p.page).trim() : "";
+      const clickableAttrs = pageHref
+        ? ` data-href="${escapeHtml(pageHref)}" tabindex="0" role="link" aria-label="Open ${escapeHtml(p.title)}"`
+        : "";
+      const clickableClass = pageHref ? " project-card is-clickable" : "";
 
       return `
-        <article class="card${clickableClass}"${hrefAttr}>
-          <div class="card-head">
-            <h3>${escapeHtml(p.title)}</h3>
-            ${p.focus ? `<span class="chip">${escapeHtml(p.focus)}</span>` : ""}
+        <article class="card${clickableClass}"${clickableAttrs}>
+          <h3>${escapeHtml(p.title)}</h3>
+          <p>${escapeHtml(p.description)}</p>
+
+          <div class="tags">${tagsHtml}</div>
+
+          <div class="muted" style="margin-bottom:12px;">
+            <strong>Focus:</strong> ${escapeHtml(focus)}
+            <br />
+            <strong>AWS:</strong> ${escapeHtml(aws)}
           </div>
 
-          <p class="muted">${escapeHtml(p.description)}</p>
-
-          ${aws.length ? `<div class="tags">${aws.slice(0, 8).map((a) => `<span class="tag">${escapeHtml(a)}</span>`).join("")}</div>` : ""}
-
-          ${tags.length ? `<div class="tags">${tags.slice(0, 8).map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("")}</div>` : ""}
-
-          <div class="card-actions">
-            ${liveLink ? `<a class="btn btn-primary" href="${escapeHtml(liveLink.href)}" target="_blank" rel="noreferrer">Live</a>` : ""}
-            ${repoLink ? `<a class="btn btn-ghost" href="${escapeHtml(repoLink.href)}" target="_blank" rel="noreferrer">Repo</a>` : ""}
-            ${blogLink ? `<a class="btn btn-ghost" href="${escapeHtml(blogLink.href)}">Guide</a>` : ""}
-          </div>
+          <div class="card-actions">${links}</div>
         </article>
       `;
     })
     .join("");
 
   wireProjectCardClicks();
+
+  const count = $("#projectCount");
+  if (count) count.textContent = String(filtered.length);
 }
 
 function wireProjectCardClicks() {
   document.querySelectorAll(".project-card.is-clickable").forEach((card) => {
-    card.style.cursor = "pointer";
+    const href = card.getAttribute("data-href");
+    if (!href) return;
+
+    const go = () => (window.location.href = href);
+
     card.addEventListener("click", (e) => {
-      // Don’t hijack clicks on buttons/links
       if (e.target.closest("a, button")) return;
-      const href = card.getAttribute("data-href");
-      if (href) window.location.href = href;
+      go();
+    });
+
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        go();
+      }
     });
   });
 }
 
-// ---------- UI Wiring ----------
-function initProjectUI() {
-  const search = document.getElementById("projectSearch");
-  if (search) {
-    search.addEventListener("input", (e) => {
-      state.query = e.target.value || "";
-      renderProjects(applyFilters(state.projects));
-    });
-  }
+/* ---------- init ---------- */
+async function initProjectsIfPresent() {
+  // Only load JSON if the homepage grid exists
+  if (!$("#projectsGrid")) return;
 
-  const sel = document.getElementById("tagFilter");
-  if (sel) {
-    sel.addEventListener("change", (e) => {
-      state.tag = e.target.value || "all";
-      renderProjects(applyFilters(state.projects));
-    });
-  }
+  const res = await fetch("data/projects.json", { cache: "no-store" });
+  if (!res.ok) throw new Error(`Failed to load data/projects.json (${res.status})`);
+  state.projects = await res.json();
+
+  const tags = uniqTags(state.projects);
+  renderFilters(tags);
+  renderProjects();
 }
 
-// ---------- Init ----------
+function initMeta() {
+  const year = $("#year");
+  if (year) year.textContent = String(new Date().getFullYear());
+}
+
 async function init() {
   initTheme();
-  initReveal();
-
-  // ✅ Don’t crash if #year doesn’t exist
-  setText("year", new Date().getFullYear());
+  initRevealAnimations();
+  initMeta();
 
   try {
-    state.projects = await loadProjects();
-    renderTagFilter(state.projects);
-    initProjectUI();
-    renderProjects(applyFilters(state.projects));
+    await initProjectsIfPresent();
   } catch (err) {
     console.error(err);
-    // Optional: show an error message if you have a placeholder element
-    const grid = document.getElementById("projectsGrid");
-    if (grid) {
-      grid.innerHTML = `
-        <div class="card">
-          <h3>Projects failed to load</h3>
-          <p class="muted">Open DevTools → Console to see the error.</p>
-        </div>
-      `;
-    }
   }
 }
 
-// Run safely in all cases
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init);
 } else {
