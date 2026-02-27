@@ -1,41 +1,118 @@
 [
   {
     "title": "AWS Static Portfolio Website",
-    "description": "Static portfolio site deployed on AWS using S3 (private origin), CloudFront (CDN), custom domain, and CI/CD. Includes a full build guide with screenshots and an architecture diagram.",
-    "focus": ["Static hosting", "CDN + HTTPS", "Custom domain", "CI/CD"],
-    "aws": ["S3", "CloudFront", "Route 53", "ACM", "IAM"],
-    "tags": ["Portfolio", "Static Website", "AWS", "CI/CD"],
+    "summary": "Static portfolio site deployed on AWS using S3 (private origin), CloudFront (CDN), custom domain, and CI/CD. Includes a full build guide with screenshots and an architecture diagram.",
     "status": "Live",
+    "focus": [
+      "Static hosting",
+      "CDN + HTTPS",
+      "Custom domain",
+      "CI/CD"
+    ],
+    "aws": [
+      "S3",
+      "CloudFront",
+      "Route 53",
+      "ACM",
+      "IAM"
+    ],
+    "tools": [
+      "S3",
+      "CloudFront",
+      "Route 53",
+      "ACM",
+      "IAM",
+      "GitHub Actions"
+    ],
     "page": "./projects/aws-static-portfolio/index.html",
     "links": {
-      "build guide": "./projects/aws-static-portfolio/index.html",
+      "caseStudy": "./projects/aws-static-portfolio/index.html",
+      "github": "https://github.com/LenoJay/AWS-Cloud-Portfolio-Website",
       "live": "https://lenojay.com",
-      "github": "https://github.com/LenoJay/AWS-Cloud-Portfolio-Website"
-    }
+      "blog": ""
+    },
+    "tags": [
+      "AWS",
+      "Static Hosting",
+      "CloudFront",
+      "S3",
+      "CI/CD"
+    ]
   },
   {
     "title": "Real-Time Personal Tracker Web App",
-    "description": "A web app where users share location with trusted groups, triggering alerts when entering/exiting geofences.",
-    "focus": ["Compute & Networking", "Event-Driven", "Notifications"],
-    "aws": ["Amazon Location Service", "Lambda", "EventBridge", "SNS", "Cognito", "DynamoDB"],
-    "tags": ["Geo", "Serverless", "Alerts"],
+    "summary": "A web app where users share location with trusted groups, triggering alerts when entering/exiting geofences.",
     "status": "In progress",
+    "focus": [
+      "Compute & Networking",
+      "Event-Driven",
+      "Notifications"
+    ],
+    "aws": [
+      "Amazon Location Service",
+      "Lambda",
+      "EventBridge",
+      "SNS",
+      "Cognito",
+      "DynamoDB"
+    ],
+    "tools": [
+      "Amazon Location",
+      "Lambda",
+      "EventBridge",
+      "SNS",
+      "Cognito",
+      "DynamoDB"
+    ],
     "page": "https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio/tree/main/Project1_PersonalTracker",
     "links": {
+      "caseStudy": "https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio/tree/main/Project1_PersonalTracker",
       "github": "https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio",
-      "writeup": "https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio/tree/main/Project1_PersonalTracker"
-    }
+      "live": "",
+      "blog": ""
+    },
+    "tags": [
+      "AWS",
+      "Serverless",
+      "Amazon Location",
+      "Event-Driven",
+      "Alerts"
+    ]
   },
   {
     "title": "AI Mood Tracker & Mindset Coach",
-    "description": "Tracks mood/wellness, analyzes sentiment, and generates motivational insights and weekly summaries.",
-    "focus": ["AI/ML", "User Insights", "Personalization"],
-    "aws": ["Lex", "Comprehend", "Personalize", "SageMaker"],
-    "tags": ["AI", "Sentiment", "Wellness"],
+    "summary": "Tracks mood/wellness, analyzes sentiment, and generates motivational insights and weekly summaries.",
     "status": "Planned",
+    "focus": [
+      "AI/ML",
+      "User Insights",
+      "Personalization"
+    ],
+    "aws": [
+      "Lex",
+      "Comprehend",
+      "Personalize",
+      "SageMaker"
+    ],
+    "tools": [
+      "Lex",
+      "Comprehend",
+      "Personalize",
+      "SageMaker"
+    ],
     "page": "https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio",
     "links": {
-      "github": "https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio"
-    }
+      "caseStudy": "https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio",
+      "github": "https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio",
+      "live": "",
+      "blog": ""
+    },
+    "tags": [
+      "AWS",
+      "AI/ML",
+      "Sentiment",
+      "Lex",
+      "Comprehend"
+    ]
   }
 ]

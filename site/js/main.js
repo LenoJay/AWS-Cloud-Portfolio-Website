@@ -1,7 +1,7 @@
 const $ = (sel) => document.querySelector(sel);
 
 const state = {
-  activeFocus: "All",
+  activeTag: "All",
   projects: [],
 };
 
@@ -46,28 +46,33 @@ function toArray(x) {
   return [String(x)];
 }
 
-function uniqFocus(projects) {
+function nonEmptyUrl(url) {
+  const u = String(url ?? "").trim();
+  return u.length ? u : "";
+}
+
+function uniqTags(projects) {
   const set = new Set();
   projects.forEach((p) => {
-    toArray(p.focus).forEach((f) => set.add(f));
+    toArray(p.tags).forEach((t) => set.add(t));
   });
   return ["All", ...Array.from(set).sort((a, b) => a.localeCompare(b))];
 }
 
-function renderFilters(focusItems) {
+function renderFilters(tagItems) {
   const wrap = $("#filters");
   if (!wrap) return;
 
   wrap.innerHTML = "";
-  focusItems.forEach((f) => {
+  tagItems.forEach((tag) => {
     const btn = document.createElement("button");
     btn.className = "chip";
     btn.type = "button";
-    btn.textContent = f;
-    btn.setAttribute("aria-pressed", f === state.activeFocus ? "true" : "false");
+    btn.textContent = tag;
+    btn.setAttribute("aria-pressed", tag === state.activeTag ? "true" : "false");
     btn.addEventListener("click", () => {
-      state.activeFocus = f;
-      renderFilters(focusItems);
+      state.activeTag = tag;
+      renderFilters(tagItems);
       renderProjects();
     });
     wrap.appendChild(btn);
@@ -75,8 +80,8 @@ function renderFilters(focusItems) {
 }
 
 function projectMatches(p) {
-  if (state.activeFocus === "All") return true;
-  return toArray(p.focus).includes(state.activeFocus);
+  if (state.activeTag === "All") return true;
+  return toArray(p.tags).includes(state.activeTag);
 }
 
 function wireProjectCardClicks() {
@@ -100,6 +105,16 @@ function wireProjectCardClicks() {
   });
 }
 
+function actionBtn({ label, href, primary = false }) {
+  const url = nonEmptyUrl(href);
+  const cls = primary ? "btn" : "btn btn-ghost";
+  if (!url) {
+    // Keep layout consistent even when a link doesn't exist.
+    return `<span class="${cls} is-disabled" aria-disabled="true" title="Not available">${escapeHtml(label)}</span>`;
+  }
+  return `<a class="${cls}" href="${escapeHtml(url)}"${url.startsWith("http") ? ' target="_blank" rel="noreferrer"' : ""}>${escapeHtml(label)}</a>`;
+}
+
 function renderProjects() {
   const grid = $("#projectsGrid");
   if (!grid) return;
@@ -108,39 +123,52 @@ function renderProjects() {
 
   grid.innerHTML = filtered
     .map((p) => {
+      const title = p.title ?? "Untitled Project";
+      const summary = p.summary ?? p.description ?? "";
       const tags = toArray(p.tags).map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("");
-      const focusText = toArray(p.focus).join(", ") || "—";
-      const awsText = toArray(p.aws).join(", ") || "—";
 
-      const pageHref = (p.page || p.links?.["build guide"] || p.links?.writeup || "").trim();
-      const isClickable = Boolean(pageHref);
+      const tools = (toArray(p.tools).length ? toArray(p.tools) : toArray(p.aws))
+        .map((t) => `<span class="tool">${escapeHtml(t)}</span>`)
+        .join("");
+
+      const focusText = toArray(p.focus).join(", ") || "—";
+      const status = p.status ? `<span class="status" data-status="${escapeHtml(p.status)}">${escapeHtml(p.status)}</span>` : "";
+
+      const caseStudy = nonEmptyUrl(p.links?.caseStudy || p.page);
+      const github = nonEmptyUrl(p.links?.github);
+      const live = nonEmptyUrl(p.links?.live);
+      const blog = nonEmptyUrl(p.links?.blog);
+
+      const isClickable = Boolean(caseStudy);
 
       const actions = [
-        p.links?.github
-          ? `<a class="btn btn-ghost" href="${escapeHtml(p.links.github)}" target="_blank" rel="noreferrer">GitHub</a>`
-          : "",
-        p.links?.live
-          ? `<a class="btn" href="${escapeHtml(p.links.live)}" target="_blank" rel="noreferrer">Live</a>`
-          : "",
-        pageHref
-          ? `<a class="btn btn-ghost" href="${escapeHtml(pageHref)}">Case Study</a>`
-          : "",
+        actionBtn({ label: "Case Study", href: caseStudy, primary: true }),
+        actionBtn({ label: "GitHub", href: github }),
+        actionBtn({ label: "Live", href: live }),
+        actionBtn({ label: "Blog", href: blog }),
       ].join("");
 
       const attrs = isClickable
-        ? `class="card project-card is-clickable" data-href="${escapeHtml(pageHref)}" tabindex="0" role="link" aria-label="Open ${escapeHtml(p.title)}"`
-        : `class="card"`;
+        ? `class="card project-card is-clickable" data-href="${escapeHtml(caseStudy)}" tabindex="0" role="link" aria-label="Open case study: ${escapeHtml(title)}"`
+        : `class="card project-card"`;
 
       return `
         <article ${attrs}>
-          <h3>${escapeHtml(p.title)}</h3>
-          <p>${escapeHtml(p.description)}</p>
+          <div class="project-head">
+            <h3>${escapeHtml(title)}</h3>
+            ${status}
+          </div>
+
+          <p>${escapeHtml(summary)}</p>
 
           <div class="tags">${tags}</div>
 
-          <div class="muted" style="margin-bottom:12px;">
-            <strong>Focus:</strong> ${escapeHtml(focusText)}<br/>
-            <strong>AWS:</strong> ${escapeHtml(awsText)}
+          <div class="meta">
+            <div><strong>Focus:</strong> ${escapeHtml(focusText)}</div>
+            <div class="tools">
+              <strong>Tools:</strong>
+              <div class="tools-chips">${tools || "<span class='muted'>—</span>"}</div>
+            </div>
           </div>
 
           <div class="card-actions">${actions}</div>
@@ -188,7 +216,7 @@ function initMeta() {
 
   try {
     state.projects = await loadProjects();
-    renderFilters(uniqFocus(state.projects));
+    renderFilters(uniqTags(state.projects));
     renderProjects();
   } catch (e) {
     console.error(e);

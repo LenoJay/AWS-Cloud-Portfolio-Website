@@ -264,3 +264,53 @@ body[data-theme="light"] .tag{ border: 1px solid var(--stroke2); }
 .steps-gallery img { max-width: 100%; height: auto; border-radius: 12px; display: block; }
 .steps-gallery figcaption { margin-top: 8px; color: var(--muted); font-size: 0.95rem; }
 
+
+
+/* --- Project card upgrades --- */
+.project-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.status{
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--stroke);
+  color: var(--muted);
+  white-space: nowrap;
+}
+body[data-theme="light"] .status{ border: 1px solid var(--stroke2); }
+
+.meta{
+  margin-bottom: 12px;
+  color: var(--muted);
+  display: grid;
+  gap: 8px;
+}
+
+.tools-chips{
+  display:flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.tool{
+  font-size: 12px;
+  padding: 6px 8px;
+  border-radius: 999px;
+  border: 1px solid var(--stroke);
+  color: var(--muted);
+}
+body[data-theme="light"] .tool{ border: 1px solid var(--stroke2); }
+
+.btn.is-disabled{
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+  transform: none !important;
+}
