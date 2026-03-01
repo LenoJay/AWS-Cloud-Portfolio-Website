@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Real-Time Personal Tracker — Case Study</title>
-  <link rel="stylesheet" href="../../css/styles.css" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Real-Time Personal Tracker Web App • Case Study</title>
+  <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -13,24 +13,81 @@
     <nav class="nav">
       <div class="brand">
         <span class="brand-dot" aria-hidden="true"></span>
-        <a href="../../index.html#projects" class="brand-link">← Back to Portfolio</a>
+        <a href="/#top" class="brand-link">My Cloud Portfolio</a>
       </div>
       <div class="nav-links">
-        <button id="themeToggle" class="btn btn-ghost" type="button">Theme</button>
+        <a href="/#projects">Projects</a>
+        <a href="/#experience">Experience</a>
+        <a href="/#skills">Skills</a>
+        <a href="/#workflows">Workflows</a>
+        <a href="/#contact">Contact</a>
+        <button id="themeToggle" class="btn btn-ghost" type="button" aria-label="Toggle theme">Theme</button>
       </div>
     </nav>
   </header>
 
   <main id="main" class="container">
+    <section class="hero" id="top">
+      <div class="hero-content reveal">
+        <p class="cmd">$ case-study --open</p>
+        <p class="eyebrow">AWS • DevOps • Case Study</p>
+        <h1 style="margin-bottom:10px;">Real-Time Personal Tracker Web App</h1>
+        <div class="tags"><span class="tag">AWS</span><span class="tag">Serverless</span><span class="tag">Amazon Location</span><span class="tag">Event-Driven</span><span class="tag">Alerts</span></div>
+        <p class="subhead">This is your “Binyam-style” case study template. Replace placeholders with your real build notes, diagrams, and decisions.</p>
+        <div class="hero-actions"><a class="btn btn-ghost" href="https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio/tree/main/Project1_PersonalTracker" target="_blank" rel="noreferrer">GitHub</a> <span class="btn btn-ghost is-disabled" aria-disabled="true">Live</span> <span class="btn btn-ghost is-disabled" aria-disabled="true">Blog</span> <a class="btn" href="/#projects">Back</a></div>
+        <div class="tools-line" style="margin-top:12px;"><span class="tag tag-tool">Amazon Location</span><span class="tag tag-tool">Lambda</span><span class="tag tag-tool">EventBridge</span><span class="tag tag-tool">SNS</span><span class="tag tag-tool">Cognito</span><span class="tag tag-tool">DynamoDB</span></div>
+      </div>
+    </section>
+
     <section class="section">
       <div class="section-head reveal">
-        <h1>Real-Time Personal Tracker Web App</h1>
-        <p>Case study page (coming next).</p>
+        <p class="cmd">$ overview</p>
+        <h2><span class="sec-num">01</span> Overview</h2>
+        <p>What you built, who it’s for, and the key outcomes.</p>
       </div>
-
       <div class="card reveal">
-        <p>This page is a placeholder so all project cards link consistently to internal case studies.</p>
-        <p><a class="btn btn-ghost" href="https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio/tree/main/Project1_PersonalTracker" target="_blank" rel="noreferrer">Open GitHub</a></p>
+        <ul>
+          <li><strong>Problem:</strong> (What pain did this solve?)</li>
+          <li><strong>Solution:</strong> (What did you build?)</li>
+          <li><strong>Key results:</strong> (Build/ops outcomes you can prove)</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head reveal">
+        <p class="cmd">$ architecture</p>
+        <h2><span class="sec-num">02</span> Architecture</h2>
+        <p>Add a diagram and explain request/data flow.</p>
+      </div>
+      <div class="card reveal">
+        <p class="muted">Drop an image into this folder and embed it here (or link to your diagram).</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-head reveal">
+        <p class="cmd">$ decisions --security --delivery --observability</p>
+        <h2><span class="sec-num">03</span> Key decisions</h2>
+        <p>Show recruiter-grade thinking.</p>
+      </div>
+      <div class="two-col reveal">
+        <div class="card">
+          <h3>Security</h3>
+          <ul>
+            <li>What you protected and how</li>
+            <li>IAM / private origins / auth</li>
+            <li>Anything you intentionally did NOT do (and why)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Delivery & Ops</h3>
+          <ul>
+            <li>CI/CD steps</li>
+            <li>Rollback strategy</li>
+            <li>Logs/alarms you watch</li>
+          </ul>
+        </div>
       </div>
     </section>
 
@@ -39,6 +96,6 @@
     </footer>
   </main>
 
-  <script src="../../js/main.js" defer></script>
+  <script src="/js/main.js" defer></script>
 </body>
 </html>

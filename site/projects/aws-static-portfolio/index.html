@@ -3,11 +3,9 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AWS Static Portfolio Website — Case Study</title>
-  <meta name="description" content="How I built and deployed my AWS static portfolio website (S3 + CloudFront + Route 53 + ACM + CI/CD)." />
-  <link rel="stylesheet" href="../../css/styles.css" />
+  <title>AWS Static Portfolio Website • Case Study</title>
+  <link rel="stylesheet" href="/css/styles.css" />
 </head>
-
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
@@ -15,155 +13,80 @@
     <nav class="nav">
       <div class="brand">
         <span class="brand-dot" aria-hidden="true"></span>
-        <a href="../../index.html#projects" class="brand-link">← Back to Portfolio</a>
+        <a href="/#top" class="brand-link">My Cloud Portfolio</a>
       </div>
-
       <div class="nav-links">
-        <a href="#overview">Overview</a>
-        <a href="#guide">Build Guide</a>
-        <a href="#screenshots">Screenshots</a>
+        <a href="/#projects">Projects</a>
+        <a href="/#experience">Experience</a>
+        <a href="/#skills">Skills</a>
+        <a href="/#workflows">Workflows</a>
+        <a href="/#contact">Contact</a>
         <button id="themeToggle" class="btn btn-ghost" type="button" aria-label="Toggle theme">Theme</button>
       </div>
     </nav>
   </header>
 
   <main id="main" class="container">
-
-    <section class="section" id="overview">
-      <div class="section-head reveal">
-        <h1>AWS Static Portfolio Website</h1>
-        <p>End-to-end build: static site + AWS hosting + CI/CD.</p>
-      </div>
-
-      <div class="card reveal">
-        <p><strong>Goal:</strong> publish a clean, public portfolio site with a professional AWS architecture.</p>
-        <p><strong>Services used:</strong> S3 (origin), CloudFront (CDN), Route 53 (DNS), ACM (certificate), GitHub Actions (deploy).</p>
-        <p class="muted">
-          Original WordPress write-up: <a href="https://lenoj94.wordpress.com/2026/02/13/1624/" target="_blank" rel="noreferrer">read here</a>.
-        </p>
-      </div>
-
-      <div class="card reveal" id="diagram" style="margin-top:14px;">
-        <h3>Architecture diagram</h3>
-        <figure class="shot">
-          <img src="./img/1-portfolio-diagram.png" alt="AWS static portfolio architecture diagram" loading="lazy">
-          <figcaption>Architecture overview.</figcaption>
-        </figure>
+    <section class="hero" id="top">
+      <div class="hero-content reveal">
+        <p class="cmd">$ case-study --open</p>
+        <p class="eyebrow">AWS • DevOps • Case Study</p>
+        <h1 style="margin-bottom:10px;">AWS Static Portfolio Website</h1>
+        <div class="tags"><span class="tag">AWS</span><span class="tag">Static Hosting</span><span class="tag">CloudFront</span><span class="tag">S3</span><span class="tag">CI/CD</span></div>
+        <p class="subhead">This is your “Binyam-style” case study template. Replace placeholders with your real build notes, diagrams, and decisions.</p>
+        <div class="hero-actions"><a class="btn btn-ghost" href="https://github.com/LenoJay/AWS-Cloud-Portfolio-Website" target="_blank" rel="noreferrer">GitHub</a> <a class="btn btn-ghost" href="https://lenojay.com" target="_blank" rel="noreferrer">Live</a> <span class="btn btn-ghost is-disabled" aria-disabled="true">Blog</span> <a class="btn" href="/#projects">Back</a></div>
+        <div class="tools-line" style="margin-top:12px;"><span class="tag tag-tool">S3</span><span class="tag tag-tool">CloudFront</span><span class="tag tag-tool">Route 53</span><span class="tag tag-tool">ACM</span><span class="tag tag-tool">IAM</span><span class="tag tag-tool">GitHub Actions</span></div>
       </div>
     </section>
 
-    <section class="section" id="guide">
+    <section class="section">
       <div class="section-head reveal">
-        <h2>Build Guide</h2>
-        <p>This is the same guide content as my WordPress post, formatted cleanly for this project page.</p>
+        <p class="cmd">$ overview</p>
+        <h2><span class="sec-num">01</span> Overview</h2>
+        <p>What you built, who it’s for, and the key outcomes.</p>
       </div>
-
       <div class="card reveal">
-        <h3>How the architecture works</h3>
-
-        <h4>User request flow (runtime)</h4>
-        <ol>
-          <li>User visits your domain (example: <code>lenojay.com</code>).</li>
-          <li>DNS routes the request to CloudFront.</li>
-          <li>CloudFront serves cached files or fetches them from the S3 origin.</li>
-          <li>The S3 bucket stays private; CloudFront is the only service that reads from it.</li>
-        </ol>
-
-        <h4>Deployment flow (updates)</h4>
-        <ol>
-          <li>You push changes to GitHub.</li>
-          <li>GitHub Actions runs a deploy workflow.</li>
-          <li>The workflow uploads updated site files to S3, and the site updates publicly.</li>
-        </ol>
-
-        <hr />
-
-        <h3>Phases (what you will do)</h3>
-        <ol>
-          <li><strong>Repo setup</strong> (GitHub + VS Code)</li>
-          <li><strong>Build the static site locally</strong> (HTML/CSS/JS + folder structure)</li>
-          <li><strong>Create the S3 origin bucket</strong> + upload the site files</li>
-          <li><strong>Register your domain</strong> + hosted zone (Route 53)</li>
-          <li><strong>Request certificate</strong> (ACM)</li>
-          <li><strong>Create CloudFront distribution</strong> + connect origin + DNS</li>
-          <li><strong>CI/CD</strong> (GitHub Actions deploy)</li>
-        </ol>
-
-        <p class="muted">
-          Full step-by-step text version is also available in the WordPress post linked above.
-        </p>
+        <ul>
+          <li><strong>Problem:</strong> (What pain did this solve?)</li>
+          <li><strong>Solution:</strong> (What did you build?)</li>
+          <li><strong>Key results:</strong> (Build/ops outcomes you can prove)</li>
+        </ul>
       </div>
     </section>
 
-    <section class="section" id="screenshots">
+    <section class="section">
       <div class="section-head reveal">
-        <h2>Screenshots</h2>
-        <p>Every step captured in order. These images are loaded from <code>./img/</code> in this project folder.</p>
+        <p class="cmd">$ architecture</p>
+        <h2><span class="sec-num">02</span> Architecture</h2>
+        <p>Add a diagram and explain request/data flow.</p>
       </div>
-
       <div class="card reveal">
-        <div class="steps-gallery">
+        <p class="muted">Drop an image into this folder and embed it here (or link to your diagram).</p>
+      </div>
+    </section>
 
-          <figure><img src="./img/2-create-repo.png" alt="Create GitHub repository" loading="lazy"><figcaption>2 — Create/open the GitHub repository.</figcaption></figure>
-          <figure><img src="./img/3-gitclone.png" alt="Clone repository method 1" loading="lazy"><figcaption>3 — Clone the repo (method 1).</figcaption></figure>
-          <figure><img src="./img/4-gitclone2.png" alt="Clone repository method 2" loading="lazy"><figcaption>4 — Clone the repo (method 2).</figcaption></figure>
-          <figure><img src="./img/5-folder-structure.png" alt="Folder structure under site/" loading="lazy"><figcaption>5 — Create folder structure under <code>site/</code>.</figcaption></figure>
-          <figure><img src="./img/6-example-file.png" alt="Example file created" loading="lazy"><figcaption>6 — Create initial HTML/CSS/JS files.</figcaption></figure>
-          <figure><img src="./img/7-source-control.png" alt="VS Code Source Control" loading="lazy"><figcaption>7 — Stage changes in VS Code Source Control.</figcaption></figure>
-          <figure><img src="./img/8-updated-repo.png" alt="Repo updated after push" loading="lazy"><figcaption>8 — Repo updated after commit/push.</figcaption></figure>
-
-          <figure><img src="./img/9-create-bucket.png" alt="Create S3 bucket step 1" loading="lazy"><figcaption>9 — Create S3 bucket (step 1).</figcaption></figure>
-          <figure><img src="./img/10-create-bucket2.png" alt="Create S3 bucket step 2" loading="lazy"><figcaption>10 — Create S3 bucket (step 2).</figcaption></figure>
-          <figure><img src="./img/11-upload-files-to-bucket.png" alt="Upload files to bucket" loading="lazy"><figcaption>11 — Upload website files/folders to S3.</figcaption></figure>
-          <figure><img src="./img/12-files-uploaded-to-bucket.png" alt="Files in bucket" loading="lazy"><figcaption>12 — Confirm objects exist in S3.</figcaption></figure>
-
-          <figure><img src="./img/13-register-domain.png" alt="Register domain step 1" loading="lazy"><figcaption>13 — Register domain (step 1).</figcaption></figure>
-          <figure><img src="./img/14-register-domain2.png" alt="Register domain step 2" loading="lazy"><figcaption>14 — Register domain (step 2).</figcaption></figure>
-          <figure><img src="./img/15-request-certificate.png" alt="Request ACM certificate step 1" loading="lazy"><figcaption>15 — Request certificate (step 1).</figcaption></figure>
-
-          <figure><img src="./img/16-request-certificate2.png" alt="Request ACM certificate step 2" loading="lazy"><figcaption>16 — Request certificate (step 2).</figcaption></figure>
-          <figure><img src="./img/17-create-dns-records.png" alt="Create DNS validation records" loading="lazy"><figcaption>17 — Create DNS validation records for certificate.</figcaption></figure>
-          <figure><img src="./img/18-hosted-zone-details.png" alt="Hosted zone details" loading="lazy"><figcaption>18 — Confirm records in hosted zone.</figcaption></figure>
-
-          <figure><img src="./img/19-cloudfront-wizard.png" alt="CloudFront wizard" loading="lazy"><figcaption>19 — Create CloudFront distribution (wizard).</figcaption></figure>
-          <figure><img src="./img/20-cloudfront-oac-settings.png" alt="CloudFront OAC settings" loading="lazy"><figcaption>20 — Configure origin access settings (screen 1).</figcaption></figure>
-          <figure><img src="./img/21-cloudfront-oac-settings2.png" alt="CloudFront OAC settings 2" loading="lazy"><figcaption>21 — Configure origin access settings (screen 2).</figcaption></figure>
-
-          <figure><img src="./img/22-bucket-policy.png" alt="Bucket policy screen 1" loading="lazy"><figcaption>22 — Update bucket policy (screen 1).</figcaption></figure>
-          <figure><img src="./img/23-bucket-policy2.png" alt="Bucket policy screen 2" loading="lazy"><figcaption>23 — Update bucket policy (screen 2).</figcaption></figure>
-
-          <figure><img src="./img/24-distribution-page.png" alt="Distribution details page" loading="lazy"><figcaption>24 — Distribution details.</figcaption></figure>
-          <figure><img src="./img/25-edit-distribution.png" alt="Edit distribution 1" loading="lazy"><figcaption>25 — Edit distribution (screen 1).</figcaption></figure>
-          <figure><img src="./img/26-edit-distribution2.png" alt="Edit distribution 2" loading="lazy"><figcaption>26 — Edit distribution (screen 2).</figcaption></figure>
-
-          <figure><img src="./img/27-error-response.png" alt="Error response screen 1" loading="lazy"><figcaption>27 — Configure error response (screen 1).</figcaption></figure>
-          <figure><img src="./img/28-error-response2.png" alt="Error response screen 2" loading="lazy"><figcaption>28 — Configure error response (screen 2).</figcaption></figure>
-          <figure><img src="./img/29-error-response3.png" alt="Error response screen 3" loading="lazy"><figcaption>29 — Configure error response (screen 3).</figcaption></figure>
-
-          <figure><img src="./img/30-alias.png" alt="Alias record screen 1" loading="lazy"><figcaption>30 — Create Route 53 alias record (screen 1).</figcaption></figure>
-          <figure><img src="./img/31-alias2.png" alt="Alias record screen 2" loading="lazy"><figcaption>31 — Create Route 53 alias record (screen 2).</figcaption></figure>
-          <figure><img src="./img/32-alias3.png" alt="Alias record screen 3" loading="lazy"><figcaption>32 — Create Route 53 alias record (screen 3).</figcaption></figure>
-          <figure><img src="./img/33-alias4.png" alt="Alias record screen 4" loading="lazy"><figcaption>33 — Create Route 53 alias record (screen 4).</figcaption></figure>
-
-          <figure><img src="./img/34-invalidation.png" alt="Invalidation screen 1" loading="lazy"><figcaption>34 — Cache refresh screen (1).</figcaption></figure>
-          <figure><img src="./img/35-invalidation2.png" alt="Invalidation screen 2" loading="lazy"><figcaption>35 — Cache refresh screen (2).</figcaption></figure>
-
-          <figure><img src="./img/36-create-github-provider.png" alt="Create GitHub identity provider 1" loading="lazy"><figcaption>36 — Add GitHub identity provider (screen 1).</figcaption></figure>
-          <figure><img src="./img/37-create-github-provider2.png" alt="Create GitHub identity provider 2" loading="lazy"><figcaption>37 — Add GitHub identity provider (screen 2).</figcaption></figure>
-
-          <figure><img src="./img/38-deploy-permission-policy.png" alt="Deploy permission policy" loading="lazy"><figcaption>38 — Create deploy permissions policy.</figcaption></figure>
-
-          <figure><img src="./img/39-create-githubactions-role.png" alt="Create GitHub Actions role 1" loading="lazy"><figcaption>39 — Create GitHub Actions role (screen 1).</figcaption></figure>
-          <figure><img src="./img/40-create-githubactions-role2.png" alt="Create GitHub Actions role 2" loading="lazy"><figcaption>40 — Create GitHub Actions role (screen 2).</figcaption></figure>
-          <figure><img src="./img/41-create-githubactions-role3.png" alt="Create GitHub Actions role 3" loading="lazy"><figcaption>41 — Create GitHub Actions role (screen 3).</figcaption></figure>
-
-          <figure><img src="./img/42-github-secrets-and-variables.png" alt="GitHub secrets and variables" loading="lazy"><figcaption>42 — Set GitHub Actions secrets + variables.</figcaption></figure>
-          <figure><img src="./img/43-github-secret.png" alt="GitHub secret" loading="lazy"><figcaption>43 — Add repository secret.</figcaption></figure>
-          <figure><img src="./img/44-github-variable.png" alt="GitHub variable" loading="lazy"><figcaption>44 — Add repository variables.</figcaption></figure>
-
-          <figure><img src="./img/45-githubactions-deployyml-file.png" alt="deploy.yml workflow file" loading="lazy"><figcaption>45 — Add the workflow file.</figcaption></figure>
-          <figure><img src="./img/46-verify-cicd-success.png" alt="Verify CI/CD success" loading="lazy"><figcaption>46 — Verify CI/CD run is green.</figcaption></figure>
-
+    <section class="section">
+      <div class="section-head reveal">
+        <p class="cmd">$ decisions --security --delivery --observability</p>
+        <h2><span class="sec-num">03</span> Key decisions</h2>
+        <p>Show recruiter-grade thinking.</p>
+      </div>
+      <div class="two-col reveal">
+        <div class="card">
+          <h3>Security</h3>
+          <ul>
+            <li>What you protected and how</li>
+            <li>IAM / private origins / auth</li>
+            <li>Anything you intentionally did NOT do (and why)</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Delivery & Ops</h3>
+          <ul>
+            <li>CI/CD steps</li>
+            <li>Rollback strategy</li>
+            <li>Logs/alarms you watch</li>
+          </ul>
         </div>
       </div>
     </section>
@@ -173,6 +96,6 @@
     </footer>
   </main>
 
-  <script src="../../js/main.js" defer></script>
+  <script src="/js/main.js" defer></script>
 </body>
 </html>

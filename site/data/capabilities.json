@@ -1,0 +1,100 @@
+[
+  {
+    "title": "Cloud Architecture",
+    "pill": "Architecture",
+    "desc": "Design AWS systems that are secure-by-default, cost-aware, and easy to operate.",
+    "bullets": [
+      "Private origins + edge delivery",
+      "Event-driven patterns",
+      "Least-privilege IAM"
+    ],
+    "chips": [
+      "CloudFront",
+      "S3",
+      "Route 53",
+      "ACM",
+      "IAM"
+    ]
+  },
+  {
+    "title": "CI/CD Automation",
+    "pill": "DevOps",
+    "desc": "Automate build, deploy, and cache refresh so changes ship reliably.",
+    "bullets": [
+      "GitHub Actions pipelines",
+      "OIDC federation (no secrets)",
+      "Environment separation"
+    ],
+    "chips": [
+      "GitHub Actions",
+      "OIDC",
+      "S3",
+      "CloudFront"
+    ]
+  },
+  {
+    "title": "Serverless Systems",
+    "pill": "AWS",
+    "desc": "Build scalable serverless backends with clean event flows and alerts.",
+    "bullets": [
+      "EventBridge rules \u2192 Lambda",
+      "SNS notifications",
+      "Auth with Cognito"
+    ],
+    "chips": [
+      "Lambda",
+      "EventBridge",
+      "SNS",
+      "Cognito",
+      "DynamoDB"
+    ]
+  },
+  {
+    "title": "Observability",
+    "pill": "SRE",
+    "desc": "Make systems debuggable: structured logs, metrics, and alarms.",
+    "bullets": [
+      "CloudWatch logs/filters",
+      "Alarm-driven signals",
+      "Operational runbooks"
+    ],
+    "chips": [
+      "CloudWatch",
+      "Alarms",
+      "Logs",
+      "Dashboards"
+    ]
+  },
+  {
+    "title": "Security & Guardrails",
+    "pill": "Security",
+    "desc": "Apply practical security controls that recruiters can verify in your repos.",
+    "bullets": [
+      "Least privilege IAM",
+      "No static credentials in pipelines",
+      "HTTPS + secure headers"
+    ],
+    "chips": [
+      "IAM",
+      "WAF",
+      "KMS",
+      "Secrets Manager"
+    ]
+  },
+  {
+    "title": "AI on AWS",
+    "pill": "AI/ML",
+    "desc": "Add AI features that fit real apps (not demo fluff).",
+    "bullets": [
+      "Sentiment + insights",
+      "Chatbot interactions",
+      "Personalization roadmap"
+    ],
+    "chips": [
+      "Comprehend",
+      "Lex",
+      "Personalize",
+      "SageMaker"
+    ]
+  }
+]

@@ -1,0 +1,109 @@
+[
+  {
+    "title": "AWS Static Portfolio Website",
+    "role": "Cloud/DevOps Project",
+    "when": "2026",
+    "domains": [
+      "AWS",
+      "CI/CD",
+      "CloudFront",
+      "S3"
+    ],
+    "tools": [
+      "S3",
+      "CloudFront",
+      "Route 53",
+      "ACM",
+      "IAM",
+      "GitHub Actions"
+    ],
+    "bullets": [
+      "Deployed a static site on AWS with a private S3 origin behind CloudFront (OAC).",
+      "Automated deployments with GitHub Actions using OIDC (no long-lived AWS keys).",
+      "Documented build steps with diagrams and reproducible workflows."
+    ],
+    "details": {
+      "Responsibilities": [
+        "Set up S3 bucket policy for private origin access.",
+        "Configured CloudFront distribution with HTTPS and caching.",
+        "Implemented CI/CD pipeline + invalidation automation."
+      ],
+      "Architecture highlights": [
+        "CloudFront \u2192 OAC \u2192 private S3",
+        "Custom domain via Route 53 + ACM",
+        "Pipeline assumes IAM role via OIDC"
+      ]
+    }
+  },
+  {
+    "title": "Real-Time Personal Tracker Web App",
+    "role": "Serverless + Location Project",
+    "when": "2026 (in progress)",
+    "domains": [
+      "AWS",
+      "Serverless",
+      "Event-Driven",
+      "Alerts",
+      "Amazon Location"
+    ],
+    "tools": [
+      "Amazon Location",
+      "EventBridge",
+      "Lambda",
+      "SNS",
+      "Cognito",
+      "DynamoDB"
+    ],
+    "bullets": [
+      "Designed geofence-based alerts using Amazon Location + EventBridge + Lambda + SNS.",
+      "Built authentication flow with Cognito and planned secure API integration.",
+      "Added monitoring/alarms to capture geofence event triggers and Lambda errors."
+    ],
+    "details": {
+      "Responsibilities": [
+        "Created tracker + geofence collections and event routing.",
+        "Configured EventBridge rule \u2192 Lambda \u2192 SNS pattern.",
+        "Defined monitoring signals (logs, metrics, alarms)."
+      ],
+      "Architecture highlights": [
+        "Location events \u2192 EventBridge \u2192 Lambda \u2192 SNS",
+        "Identity via Cognito",
+        "State in DynamoDB (planned/iterating)"
+      ]
+    }
+  },
+  {
+    "title": "AI Mood Tracker & Mindset Coach",
+    "role": "AI Project (planned)",
+    "when": "Roadmap",
+    "domains": [
+      "AI/ML",
+      "Sentiment",
+      "Lex",
+      "Comprehend"
+    ],
+    "tools": [
+      "Comprehend",
+      "Lex",
+      "Personalize",
+      "SageMaker"
+    ],
+    "bullets": [
+      "Plan: sentiment analysis + weekly summaries + personalized insights.",
+      "Plan: conversational UX via Lex.",
+      "Plan: recommendations/personalization using AWS services."
+    ],
+    "details": {
+      "Responsibilities": [
+        "Define data model for mood logs and summaries.",
+        "Add sentiment scoring and insight generation.",
+        "Design safe prompts + guardrails for motivational output."
+      ],
+      "Architecture highlights": [
+        "App \u2192 API \u2192 processing \u2192 insights store",
+        "Comprehend for sentiment",
+        "Lex for conversation"
+      ]
+    }
+  }
+]

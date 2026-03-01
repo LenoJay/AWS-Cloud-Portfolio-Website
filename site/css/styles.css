@@ -266,51 +266,279 @@ body[data-theme="light"] .tag{ border: 1px solid var(--stroke2); }
 
 
 
-/* --- Project card upgrades --- */
-.project-head{
-  display:flex;
-  align-items:flex-start;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 6px;
-}
-
-.status{
+/* ====== Hitesh / Mohit / Binyam-inspired add-ons ====== */
+.cmd{
+  margin: 0 0 10px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
   font-size: 12px;
-  padding: 6px 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.sec-num{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width: 38px;
+  height: 28px;
+  margin-right: 10px;
   border-radius: 999px;
   border: 1px solid var(--stroke);
   color: var(--muted);
-  white-space: nowrap;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+  font-size: 12px;
 }
-body[data-theme="light"] .status{ border: 1px solid var(--stroke2); }
+body[data-theme="light"] .sec-num{ border: 1px solid var(--stroke2); color: var(--muted2); }
 
-.meta{
-  margin-bottom: 12px;
-  color: var(--muted);
-  display: grid;
+.section-head h2{
+  display:flex;
+  align-items:center;
   gap: 8px;
 }
 
-.tools-chips{
+/* KPI strip */
+.kpi-grid{
+  display:grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 14px;
+}
+.kpi{
+  grid-column: span 4;
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  background: rgba(255,255,255,0.03);
+  padding: 14px 14px 12px;
+}
+body[data-theme="light"] .kpi{
+  border: 1px solid var(--stroke2);
+  background: var(--panel2);
+}
+.kpi .kpi-top{
   display:flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-top: 6px;
+  align-items:baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+.kpi .kpi-label{
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+.kpi .kpi-value{
+  font-weight: 800;
+  font-size: 14px;
+  color: var(--text);
+}
+body[data-theme="light"] .kpi .kpi-value{ color: var(--text2); }
+.kpi .kpi-note{
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 13px;
 }
 
-.tool{
-  font-size: 12px;
-  padding: 6px 8px;
-  border-radius: 999px;
+/* Capabilities grid */
+.cap-grid{
+  display:grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 14px;
+}
+.cap{
+  grid-column: span 4;
   border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  padding: 16px;
+  background: rgba(255,255,255,0.03);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.10);
+}
+body[data-theme="light"] .cap{
+  border: 1px solid var(--stroke2);
+  background: var(--panel2);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+}
+.cap .cap-pill{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  border: 1px solid var(--stroke);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+body[data-theme="light"] .cap .cap-pill{ border: 1px solid var(--stroke2); }
+.cap h3{ margin: 0 0 6px; }
+.cap p{ margin: 0 0 10px; color: var(--muted); }
+.cap ul{ margin: 0 0 12px; padding-left: 18px; color: var(--muted); }
+.cap .chips{ display:flex; flex-wrap:wrap; gap: 6px; }
+
+/* Skills tree */
+.skills-grid{
+  display:grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 14px;
+}
+.skill-group{
+  grid-column: span 6;
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  padding: 16px;
+  background: rgba(255,255,255,0.03);
+}
+body[data-theme="light"] .skill-group{ border: 1px solid var(--stroke2); background: var(--panel2); }
+.skill-group h3{ margin: 0 0 10px; }
+.skill{
+  display:grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items:center;
+  padding: 10px 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+body[data-theme="light"] .skill{ border-top: 1px solid rgba(0,0,0,0.06); }
+.skill:first-of-type{ border-top: none; }
+.skill .skill-name{ font-weight: 650; }
+.skill .skill-level{ color: var(--muted); font-size: 12px; }
+.bar{
+  grid-column: 1 / -1;
+  height: 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  overflow:hidden;
+}
+body[data-theme="light"] .bar{
+  background: rgba(0,0,0,0.06);
+  border: 1px solid rgba(0,0,0,0.08);
+}
+.bar > span{
+  display:block;
+  height: 100%;
+  width: 0%;
+  background: rgba(124,92,255,0.55);
+}
+
+/* Experience timeline */
+.timeline{
+  display:grid;
+  gap: 12px;
+}
+.timeline-item{
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  padding: 16px;
+  background: rgba(255,255,255,0.03);
+}
+body[data-theme="light"] .timeline-item{
+  border: 1px solid var(--stroke2);
+  background: var(--panel2);
+}
+.timeline-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.timeline-title{ margin: 0; font-size: 18px; }
+.timeline-meta{ color: var(--muted); font-size: 13px; }
+.tools-line{ margin-top: 10px; display:flex; flex-wrap:wrap; gap: 6px; }
+
+/* Certifications */
+.cert-grid{
+  display:grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 14px;
+}
+.cert{
+  grid-column: span 4;
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius);
+  padding: 16px;
+  background: rgba(255,255,255,0.03);
+}
+body[data-theme="light"] .cert{ border: 1px solid var(--stroke2); background: var(--panel2); }
+.cert .cert-top{ display:flex; align-items:flex-start; justify-content: space-between; gap: 10px; }
+.cert .cert-name{ margin: 0; font-size: 16px; }
+.cert .cert-meta{ color: var(--muted); font-size: 13px; margin-top: 6px; }
+
+/* Health panel */
+.health-panel{
+  margin-top: 12px;
+  border: 1px solid var(--stroke);
+  border-radius: 14px;
+  padding: 12px;
+  background: rgba(0,0,0,0.18);
+}
+body[data-theme="light"] .health-panel{
+  border: 1px solid var(--stroke2);
+  background: rgba(0,0,0,0.04);
+}
+.health-row{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-top: 1px solid rgba(255,255,255,0.06);
+}
+body[data-theme="light"] .health-row{ border-top: 1px solid rgba(0,0,0,0.06); }
+.health-row:first-child{ border-top: none; }
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap: 8px;
+  border: 1px solid var(--stroke);
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 12px;
   color: var(--muted);
 }
-body[data-theme="light"] .tool{ border: 1px solid var(--stroke2); }
+body[data-theme="light"] .badge{ border: 1px solid var(--stroke2); color: var(--muted2); }
+.badge.ok{ border-color: rgba(46, 204, 113, 0.55); }
+.badge.warn{ border-color: rgba(241, 196, 15, 0.55); }
+.badge.off{ border-color: rgba(231, 76, 60, 0.55); }
 
-.btn.is-disabled{
-  opacity: 0.45;
-  cursor: not-allowed;
-  pointer-events: none;
-  transform: none !important;
+/* Modal (Herve-style “Details”) */
+.modal{ position: fixed; inset: 0; display:none; z-index: 999; }
+.modal[aria-hidden="false"]{ display:block; }
+.modal-backdrop{ position:absolute; inset:0; background: rgba(0,0,0,0.62); }
+.modal-card{
+  position: relative;
+  max-width: 860px;
+  margin: 7vh auto;
+  border-radius: 18px;
+  border: 1px solid var(--stroke);
+  background: var(--panel);
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+body[data-theme="light"] .modal-card{
+  border: 1px solid var(--stroke2);
+  background: var(--panel2);
+}
+.modal-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+body[data-theme="light"] .modal-head{ border-bottom: 1px solid rgba(0,0,0,0.08); }
+.modal-body{ padding-top: 12px; color: var(--muted); }
+.modal-body h4{ margin: 0 0 8px; color: inherit; }
+.modal-body ul{ margin: 0 0 14px; padding-left: 18px; }
+.modal-body .tags{ margin-top: 8px; }
+
+@media (max-width: 980px){
+  .kpi{ grid-column: span 6; }
+  .cap{ grid-column: span 6; }
+  .cert{ grid-column: span 6; }
+}
+@media (max-width: 620px){
+  .kpi{ grid-column: span 12; }
+  .cap{ grid-column: span 12; }
+  .cert{ grid-column: span 12; }
+  .skill-group{ grid-column: span 12; }
+  .modal-card{ margin: 4vh 14px; }
 }

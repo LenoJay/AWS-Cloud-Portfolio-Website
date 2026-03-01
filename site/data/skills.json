@@ -1,0 +1,90 @@
+[
+  {
+    "domain": "AWS Foundations",
+    "items": [
+      {
+        "name": "IAM (least privilege)",
+        "level": 75
+      },
+      {
+        "name": "S3 + policies",
+        "level": 75
+      },
+      {
+        "name": "CloudFront (OAC, caching)",
+        "level": 70
+      },
+      {
+        "name": "Route 53 + ACM",
+        "level": 65
+      },
+      {
+        "name": "CloudWatch basics",
+        "level": 55
+      }
+    ]
+  },
+  {
+    "domain": "Serverless & Event-Driven",
+    "items": [
+      {
+        "name": "Lambda",
+        "level": 60
+      },
+      {
+        "name": "EventBridge",
+        "level": 60
+      },
+      {
+        "name": "SNS",
+        "level": 55
+      },
+      {
+        "name": "API Gateway (conceptual)",
+        "level": 50
+      },
+      {
+        "name": "DynamoDB (basic patterns)",
+        "level": 45
+      }
+    ]
+  },
+  {
+    "domain": "DevOps",
+    "items": [
+      {
+        "name": "GitHub Actions (CI/CD)",
+        "level": 70
+      },
+      {
+        "name": "OIDC federation",
+        "level": 65
+      },
+      {
+        "name": "Deploy automation",
+        "level": 60
+      },
+      {
+        "name": "Versioning + release notes",
+        "level": 50
+      }
+    ]
+  },
+  {
+    "domain": "AI on AWS (roadmap)",
+    "items": [
+      {
+        "name": "Comprehend (sentiment)",
+        "level": 40
+      },
+      {
+        "name": "Lex (chat)",
+        "level": 35
+      },
+      {
+        "name": "Personalize (concepts)",
+        "level": 30
+      }
+    ]
+  }
+]

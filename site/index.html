@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AWS Cloud Portfolio</title>
-  <meta name="description" content="AWS/Cloud projects portfolio with architecture, workflows, and live demos." />
-  <link rel="stylesheet" href="css/styles.css" />
+  <meta name="description" content="AWS/Cloud projects portfolio with case studies, skills, workflows, and live demos." />
+  <link rel="stylesheet" href="/css/styles.css" />
 </head>
 
 <body>
@@ -20,12 +20,11 @@
 
       <div class="nav-links">
         <a href="#projects">Projects</a>
+        <a href="#experience">Experience</a>
         <a href="#skills">Skills</a>
         <a href="#workflows">Workflows</a>
         <a href="#contact">Contact</a>
-        <button id="themeToggle" class="btn btn-ghost" type="button" aria-label="Toggle theme">
-          Theme
-        </button>
+        <button id="themeToggle" class="btn btn-ghost" type="button" aria-label="Toggle theme">Theme</button>
       </div>
     </nav>
   </header>
@@ -33,16 +32,17 @@
   <main id="main" class="container">
     <section class="hero" id="top">
       <div class="hero-content reveal">
+        <p class="cmd">$ deploy --aws --secure --cicd</p>
         <p class="eyebrow">AWS • DevOps • Cloud Engineering</p>
         <h1>Projects with real infrastructure, security, and delivery pipelines.</h1>
         <p class="subhead">
-          This site is hosted on AWS with a private S3 origin behind CloudFront (OAC), HTTPS, and CI/CD from GitHub.
+          Hosted on AWS with a private S3 origin behind CloudFront (OAC), HTTPS via ACM, and CI/CD from GitHub Actions.
         </p>
 
         <div class="hero-actions">
-          <a class="btn" href="#projects">View Projects</a>
-          <a class="btn btn-ghost" href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
-          <a class="btn btn-ghost" href="#workflows">Architecture & Workflows</a>
+          <a class="btn" href="#projects">Explore Projects</a>
+          <a class="btn btn-ghost" href="https://github.com/LenoJay" target="_blank" rel="noreferrer">GitHub</a>
+          <a class="btn btn-ghost" href="#workflows">How it’s delivered</a>
         </div>
 
         <div class="hero-metrics">
@@ -51,76 +51,112 @@
             <div class="metric-label">Projects</div>
           </div>
           <div class="metric">
-            <div class="metric-value">AWS</div>
-            <div class="metric-label">Hosted</div>
+            <div class="metric-value">OIDC</div>
+            <div class="metric-label">No AWS keys</div>
           </div>
           <div class="metric">
-            <div class="metric-value">CI/CD</div>
-            <div class="metric-label">GitHub → AWS</div>
+            <div class="metric-value">OAC</div>
+            <div class="metric-label">Private origin</div>
           </div>
         </div>
       </div>
+    </section>
+
+    <section class="section" id="impact">
+      <div class="section-head reveal">
+        <p class="cmd">$ impact --summary --format=cards</p>
+        <h2><span class="sec-num">01</span> Impact</h2>
+        <p>Quick proof points from how this portfolio is built and operated.</p>
+      </div>
+
+      <div class="kpi-grid reveal" id="kpiGrid" aria-label="Impact KPIs"></div>
+    </section>
+
+    <section class="section" id="capabilities">
+      <div class="section-head reveal">
+        <p class="cmd">$ cat /etc/capabilities.conf</p>
+        <h2><span class="sec-num">02</span> What I build</h2>
+        <p>My focus areas (cloud, DevOps, security, observability, and AI-on-AWS).</p>
+      </div>
+
+      <div class="cap-grid reveal" id="capGrid" aria-label="Capabilities"></div>
     </section>
 
     <section class="section" id="projects">
       <div class="section-head reveal">
-        <h2>Projects</h2>
+        <p class="cmd">$ projects --list --filter=tags</p>
+        <h2><span class="sec-num">03</span> Projects</h2>
         <p>Filter by tags. Every project uses the same buttons: Case Study, GitHub, Live, and Blog.</p>
       </div>
 
-      <div class="filters reveal" id="filters" aria-label="Project tag filters"></div>
-
+      <div class="filters reveal" id="filters" aria-label="Project filters"></div>
       <div class="grid reveal" id="projectsGrid" aria-live="polite"></div>
+    </section>
+
+    <section class="section" id="experience">
+      <div class="section-head reveal">
+        <p class="cmd">$ grep -R "experience" /var/log/career.log</p>
+        <h2><span class="sec-num">04</span> Experience</h2>
+        <p>Project experience written like responsibilities + architecture highlights (click Details).</p>
+      </div>
+
+      <div class="filters reveal" id="expFilters" aria-label="Experience filters"></div>
+      <div class="timeline reveal" id="expTimeline" aria-label="Experience timeline"></div>
     </section>
 
     <section class="section" id="skills">
       <div class="section-head reveal">
-        <h2>Skills</h2>
-        <p>What I can do reliably (not just “familiar with”).</p>
+        <p class="cmd">$ ./skills --list --verbose</p>
+        <h2><span class="sec-num">05</span> Skills</h2>
+        <p>Grouped by domain (so it’s scannable and honest).</p>
       </div>
 
-      <div class="two-col reveal">
-        <div class="card">
-          <h3>Cloud & Infra</h3>
-          <ul>
-            <li>CloudFront, S3, Route 53, ACM</li>
-            <li>IAM least-privilege + OIDC federation</li>
-            <li>Serverless patterns: API Gateway → Lambda → DynamoDB/SNS</li>
-          </ul>
-        </div>
-        <div class="card">
-          <h3>DevOps</h3>
-          <ul>
-            <li>CI/CD with GitHub Actions</li>
-            <li>Cache invalidations, build artifacts, environment separation</li>
-            <li>Logging/monitoring basics (CloudWatch + access logs)</li>
-          </ul>
-        </div>
+      <div class="skills-grid reveal" id="skillsTree" aria-label="Skills tree"></div>
+    </section>
+
+    <section class="section" id="certifications">
+      <div class="section-head reveal">
+        <p class="cmd">$ certs --verified</p>
+        <h2><span class="sec-num">06</span> Certifications</h2>
+        <p>Verified credentials (add your Credly links when ready).</p>
       </div>
+
+      <div class="cert-grid reveal" id="certGrid" aria-label="Certifications"></div>
     </section>
 
     <section class="section" id="workflows">
       <div class="section-head reveal">
-        <h2>Architecture & Workflows</h2>
+        <p class="cmd">$ runbook --show --portfolio</p>
+        <h2><span class="sec-num">07</span> Architecture & Workflows</h2>
         <p>How this portfolio is delivered and secured.</p>
       </div>
 
-      <div class="card reveal">
-        <h3>Hosting workflow</h3>
-        <ol>
-          <li>Push to <strong>main</strong> on GitHub</li>
-          <li>GitHub Actions assumes an AWS IAM role via <strong>OIDC</strong> (no stored access keys)</li>
-          <li>Deploy to S3 + CloudFront invalidation</li>
-        </ol>
-        <p class="muted">
-          CloudFront uses Origin Access Control so the S3 bucket can remain private. {index=5}
-        </p>
+      <div class="two-col reveal">
+        <div class="card">
+          <h3>Hosting workflow</h3>
+          <ol>
+            <li>Push to <strong>main</strong> on GitHub</li>
+            <li>GitHub Actions assumes an AWS IAM role via <strong>OIDC</strong> (no stored access keys)</li>
+            <li>Deploy to S3 + CloudFront invalidation</li>
+          </ol>
+          <p class="muted">
+            CloudFront uses Origin Access Control so the S3 bucket can remain private.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>check-health</h3>
+          <p class="muted">Quick self-check to prove the “ops mindset” (front-end only).</p>
+          <button class="btn" type="button" id="healthBtn">Run check</button>
+          <div class="health-panel" id="healthPanel" hidden></div>
+        </div>
       </div>
     </section>
 
     <section class="section" id="contact">
       <div class="section-head reveal">
-        <h2>Contact</h2>
+        <p class="cmd">$ contact --send</p>
+        <h2><span class="sec-num">08</span> Contact</h2>
         <p>For roles, collaborations, or feedback.</p>
       </div>
 
@@ -128,9 +164,10 @@
         <div class="contact-grid">
           <a class="btn" href="mailto:you@example.com">Email</a>
           <a class="btn btn-ghost" href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
-          <a class="btn btn-ghost" href="https://github.com/" target="_blank" rel="noreferrer">GitHub</a>
+          <a class="btn btn-ghost" href="https://github.com/LenoJay" target="_blank" rel="noreferrer">GitHub</a>
+          <a class="btn btn-ghost" href="#" aria-disabled="true">Schedule a call</a>
         </div>
-        <p class="muted">Optional upgrade: add a real AWS-backed contact form (API Gateway → Lambda → SNS/SES).</p>
+        <p class="muted">Optional next upgrade: AWS-backed contact form (API Gateway → Lambda → SNS/SES).</p>
       </div>
     </section>
 
@@ -139,6 +176,20 @@
     </footer>
   </main>
 
-  <script src="js/main.js" defer></script>
+  <div class="modal" id="modal" aria-hidden="true">
+    <div class="modal-backdrop" data-close="true"></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-head">
+        <div>
+          <p class="cmd" id="modalCmd">$ details --open</p>
+          <h3 id="modalTitle" style="margin:0;">Details</h3>
+        </div>
+        <button class="btn btn-ghost" type="button" data-close="true">Close</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
+  <script src="/js/main.js" defer></script>
 </body>
 </html>

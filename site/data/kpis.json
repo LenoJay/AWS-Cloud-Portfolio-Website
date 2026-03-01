@@ -1,0 +1,32 @@
+[
+  {
+    "label": "CI/CD",
+    "value": "GitHub Actions \u2192 S3/CloudFront",
+    "note": "OIDC role (no access keys)"
+  },
+  {
+    "label": "Security",
+    "value": "Private S3 origin",
+    "note": "CloudFront OAC enforced"
+  },
+  {
+    "label": "HTTPS",
+    "value": "ACM-managed TLS",
+    "note": "Custom domain + TLS"
+  },
+  {
+    "label": "Observability",
+    "value": "Logs + alarms",
+    "note": "CloudWatch patterns"
+  },
+  {
+    "label": "Compliance",
+    "value": "Verified build signals",
+    "note": "Docs + diagrams per project"
+  },
+  {
+    "label": "Delivery",
+    "value": "Fast cache refresh",
+    "note": "Automated invalidations"
+  }
+]
