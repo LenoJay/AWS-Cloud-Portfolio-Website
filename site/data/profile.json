@@ -1,0 +1,28 @@
+{
+  "name": "Lenkov",
+  "title": "AWS Cloud / DevOps Engineer",
+  "location": "London, UK",
+  "specializations": [
+    "AWS",
+    "DevOps",
+    "Serverless",
+    "CloudFront",
+    "Security",
+    "CI/CD"
+  ],
+  "highlight_keywords": [
+    "AWS",
+    "DevOps",
+    "Serverless",
+    "CloudFront",
+    "Security",
+    "CI/CD",
+    "EventBridge",
+    "Lambda",
+    "Cognito"
+  ],
+  "github": "https://github.com/LenoJay",
+  "linkedin": "https://www.linkedin.com/in/leno-jovicevic-197b03175/",
+  "email": "lenoj94@gmail.com",
+  "blog_home": "/blog/index.html"
+}

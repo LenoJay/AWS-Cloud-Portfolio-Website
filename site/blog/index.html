@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Blog • Lenkov</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header is-sticky">
+    <nav class="nav">
+      <div class="brand">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <a href="/#top" class="brand-link">My Cloud Portfolio</a>
+      </div>
+      <div class="nav-links">
+        <a href="/#about">About</a>
+        <a href="/#projects">Projects</a>
+        <a href="/#skills">Skills</a>
+        <a href="/blog/index.html" aria-current="page">Blog</a>
+        <a href="/#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="container">
+    <section class="hero" style="padding-top:32px;">
+      <div class="hero-content reveal">
+        <p class="cmd">$ blog --all</p>
+        <h1 style="margin:0;">Blog</h1>
+        <p class="subhead">Posts about AWS builds, decisions, and lessons learned.</p>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="blog-grid reveal" id="blogGrid"></div>
+    </section>
+
+    <footer class="footer">
+      <p class="muted">© <span id="year"></span> • Built and hosted on AWS.</p>
+    </footer>
+  </main>
+
+  <script src="/js/main.js" defer></script>
+</body>
+</html>

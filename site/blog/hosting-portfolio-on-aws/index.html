@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>How I hosted this portfolio on AWS (S3 + CloudFront + ACM) • Blog</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header is-sticky">
+    <nav class="nav">
+      <div class="brand">
+        <span class="brand-dot" aria-hidden="true"></span>
+        <a href="/#top" class="brand-link">My Cloud Portfolio</a>
+      </div>
+      <div class="nav-links">
+        <a href="/#about">About</a>
+        <a href="/#projects">Projects</a>
+        <a href="/#skills">Skills</a>
+        <a href="/blog/index.html">Blog</a>
+        <a href="/#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main" class="container">
+    <section class="hero" style="padding-top:32px;">
+      <div class="hero-content reveal">
+        <p class="cmd">$ blog --open</p>
+        <p class="eyebrow">2026-03-01</p>
+        <h1 style="margin:0 0 10px;">How I hosted this portfolio on AWS (S3 + CloudFront + ACM)</h1>
+        <div class="tags"><span class="tag">AWS</span><span class="tag">S3</span><span class="tag">CloudFront</span><span class="tag">ACM</span></div>
+        <p class="subhead">A reproducible walkthrough of how the site is deployed securely, including private origin access and HTTPS.</p>
+        <div class="hero-actions">
+          <a class="btn" href="/blog/index.html">Back to blog</a>
+          <a class="btn btn-ghost" href="/#projects">Projects</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="card reveal">
+        <p class="muted">
+          Replace this placeholder with your post content.
+        </p>
+        <ul class="muted">
+          <li><strong>Goal</strong> (what you wanted)</li>
+          <li><strong>Architecture</strong> (diagram + flow)</li>
+          <li><strong>Security</strong> (what you locked down)</li>
+          <li><strong>Delivery</strong> (CI/CD steps)</li>
+          <li><strong>Lessons</strong> (what you’d improve)</li>
+        </ul>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p class="muted">© <span id="year"></span> • Built and hosted on AWS.</p>
+    </footer>
+  </main>
+
+  <script src="/js/main.js" defer></script>
+</body>
+</html>

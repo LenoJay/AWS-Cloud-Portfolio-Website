@@ -1,0 +1,40 @@
+[
+  {
+    "id": "hosting-portfolio-on-aws",
+    "title": "How I hosted this portfolio on AWS (S3 + CloudFront + ACM)",
+    "summary": "A reproducible walkthrough of how the site is deployed securely, including private origin access and HTTPS.",
+    "tags": [
+      "AWS",
+      "S3",
+      "CloudFront",
+      "ACM"
+    ],
+    "date": "2026-03-01",
+    "href": "/blog/hosting-portfolio-on-aws/index.html"
+  },
+  {
+    "id": "github-actions-oidc-to-aws",
+    "title": "GitHub Actions \u2192 AWS with OIDC (no long-lived access keys)",
+    "summary": "How OIDC role assumption works, and how to keep CI/CD secure.",
+    "tags": [
+      "CI/CD",
+      "Security",
+      "OIDC",
+      "AWS"
+    ],
+    "date": "2026-03-01",
+    "href": "/blog/github-actions-oidc-to-aws/index.html"
+  },
+  {
+    "id": "cloudfront-private-s3-oac",
+    "title": "CloudFront private S3 origin with OAC (why it matters)",
+    "summary": "A clear explanation of why S3 should be private behind CloudFront and how OAC enforces it.",
+    "tags": [
+      "CloudFront",
+      "S3",
+      "Security"
+    ],
+    "date": "2026-03-01",
+    "href": "/blog/cloudfront-private-s3-oac/index.html"
+  }
+]

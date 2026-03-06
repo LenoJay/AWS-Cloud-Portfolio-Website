@@ -2,37 +2,12 @@ const $ = (sel) => document.querySelector(sel);
 
 const state = {
   activeTag: "All",
-  activeExp: "All",
-  data: {
-    projects: [],
-    kpis: [],
-    capabilities: [],
-    skills: [],
-    certs: [],
-    experience: [],
-  }
+  projects: [],
+  skills: [],
+  certs: [],
+  blog: [],
+  profile: null,
 };
-
-function prefersLight() {
-  return window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
-}
-function applyTheme(theme) {
-  document.body.dataset.theme = theme;
-  localStorage.setItem("theme", theme);
-}
-function initTheme() {
-  const saved = localStorage.getItem("theme");
-  if (saved === "light" || saved === "dark") applyTheme(saved);
-  else applyTheme(prefersLight() ? "light" : "dark");
-
-  const btn = $("#themeToggle");
-  if (btn) {
-    btn.addEventListener("click", () => {
-      const current = document.body.dataset.theme || "dark";
-      applyTheme(current === "dark" ? "light" : "dark");
-    });
-  }
-}
 
 function escapeHtml(s) {
   return String(s ?? "")
@@ -61,21 +36,79 @@ function initRevealAnimations() {
   els.forEach((e) => io.observe(e));
 }
 
-function makeAction(label, href, kind) {
-  const cls = kind === "primary" ? "btn" : "btn btn-ghost";
+function makeAction(label, href, kind, iconSvg) {
+  const clsBase = kind === "primary" ? "btn" : "btn btn-ghost";
+  const cls = iconSvg ? `${clsBase} btn-icon` : clsBase;
+
   if (!href) return `<span class="${cls} is-disabled" aria-disabled="true">${escapeHtml(label)}</span>`;
+
   const isExternal = /^https?:\/\//i.test(href);
   const extra = isExternal ? ` target="_blank" rel="noreferrer"` : "";
-  return `<a class="${cls}" href="${escapeHtml(href)}"${extra}>${escapeHtml(label)}</a>`;
+  return `<a class="${cls}" href="${escapeHtml(href)}"${extra}>${iconSvg || ""}${escapeHtml(label)}</a>`;
 }
 
-/* ---------- Projects (Hasan-style filters + consistent buttons) ---------- */
+function svgGitHub() {
+  return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 .5C5.73.5.75 5.67.75 12.07c0 5.14 3.28 9.5 7.83 11.04.57.11.78-.25.78-.55v-2.02c-3.19.71-3.86-1.39-3.86-1.39-.52-1.36-1.27-1.72-1.27-1.72-1.04-.73.08-.72.08-.72 1.15.08 1.76 1.21 1.76 1.21 1.02 1.79 2.67 1.27 3.32.97.1-.76.4-1.27.73-1.56-2.55-.3-5.23-1.31-5.23-5.82 0-1.29.45-2.34 1.19-3.17-.12-.3-.52-1.52.11-3.17 0 0 .97-.32 3.18 1.21.92-.26 1.9-.39 2.88-.39.98 0 1.96.13 2.88.39 2.2-1.53 3.17-1.21 3.17-1.21.64 1.65.24 2.87.12 3.17.74.83 1.19 1.88 1.19 3.17 0 4.52-2.68 5.52-5.24 5.81.41.36.78 1.08.78 2.18v3.23c0 .31.2.67.79.55 4.55-1.54 7.83-5.9 7.83-11.04C23.25 5.67 18.27.5 12 .5z"/></svg>`;
+}
+function svgLinkedIn() {
+  return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4.98 3.5C3.33 3.5 2 4.85 2 6.52c0 1.64 1.31 2.98 2.94 2.98h.03c1.68 0 2.98-1.34 2.98-2.98C7.95 4.85 6.66 3.5 4.98 3.5zM2.4 21h5.16V9.98H2.4V21zM9.26 9.98V21h5.16v-6.15c0-3.29 4.27-3.56 4.27 0V21H24v-7.93c0-6.18-6.65-5.95-8.58-2.91V9.98H9.26z"/></svg>`;
+}
+function svgMail() {
+  return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>`;
+}
+function svgBook() {
+  return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M18 2H8C6.9 2 6 2.9 6 4v16c0 1.1.9 2 2 2h10v-2H8V4h10v6h2V4c0-1.1-.9-2-2-2z"/><path fill="currentColor" d="M11 6h6v2h-6V6zm0 4h6v2h-6v-2zm0 4h6v2h-6v-2z"/></svg>`;
+}
+
+function renderProfile() {
+  const p = state.profile;
+  if (!p) return;
+
+  const aboutName = $("#aboutName");
+  if (aboutName) aboutName.textContent = p.name || "Lenkov";
+
+  const heroTitle = $("#heroTitle");
+  if (heroTitle) heroTitle.textContent = (p.specializations || []).slice(0,3).join(" • ") || "AWS • DevOps • Cloud";
+
+  const keywordChips = $("#keywordChips");
+  if (keywordChips) {
+    keywordChips.innerHTML = (p.specializations || []).map((k) => `<span class="tag">${escapeHtml(k)}</span>`).join("");
+  }
+
+  const badges = $("#aboutBadges");
+  if (badges) {
+    badges.innerHTML = (p.highlight_keywords || []).slice(0,8).map((k) => `<span class="tag tag-tool">${escapeHtml(k)}</span>`).join("");
+  }
+
+  const social = $("#socialButtons");
+  const mailHref = p.email ? `mailto:${p.email}` : "";
+  if (social) {
+    social.innerHTML = [
+      makeAction("GitHub", p.github, "primary", svgGitHub()),
+      makeAction("LinkedIn", p.linkedin, "ghost", svgLinkedIn()),
+      makeAction("Blog", p.blog_home, "ghost", svgBook()),
+      makeAction("Email", mailHref, "ghost", svgMail()),
+    ].join("");
+  }
+
+  const contact = $("#contactButtons");
+  if (contact) {
+    contact.innerHTML = [
+      makeAction("Email", mailHref, "primary", svgMail()),
+      makeAction("LinkedIn", p.linkedin, "ghost", svgLinkedIn()),
+      makeAction("GitHub", p.github, "ghost", svgGitHub()),
+      makeAction("Blog", p.blog_home, "ghost", svgBook()),
+    ].join("");
+  }
+}
+
+/* ---------- Projects ---------- */
 function uniqTags(projects) {
   const set = new Set();
   projects.forEach((p) => toArray(p.tags).forEach((t) => set.add(t)));
   return ["All", ...Array.from(set).sort((a, b) => a.localeCompare(b))];
 }
-function renderProjectFilters(tags) {
+function renderFilters(tags) {
   const wrap = $("#filters");
   if (!wrap) return;
   wrap.innerHTML = "";
@@ -87,7 +120,7 @@ function renderProjectFilters(tags) {
     btn.setAttribute("aria-pressed", t === state.activeTag ? "true" : "false");
     btn.addEventListener("click", () => {
       state.activeTag = t;
-      renderProjectFilters(tags);
+      renderFilters(tags);
       renderProjects();
     });
     wrap.appendChild(btn);
@@ -104,36 +137,12 @@ function statusClass(status) {
   if (s.includes("plan")) return "status status-planned";
   return "status";
 }
-
-function wireProjectCardClicks() {
-  document.querySelectorAll(".project-card.is-clickable").forEach((card) => {
-    const href = card.getAttribute("data-href");
-    if (!href) return;
-    const go = () => (window.location.href = href);
-    card.addEventListener("click", (e) => {
-      if (e.target.closest("a, button")) return;
-      go();
-    });
-    card.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        go();
-      }
-    });
-  });
-}
-
 function renderProjects() {
   const grid = $("#projectsGrid");
   if (!grid) return;
 
-  const projects = state.data.projects
-    .slice()
-    .sort((a, b) => (b.featured === true) - (a.featured === true) || a.title.localeCompare(b.title));
-
-  const filtered = projects.filter(projectMatches);
-
-  grid.innerHTML = filtered
+  const items = state.projects.filter(projectMatches);
+  grid.innerHTML = items
     .map((p) => {
       const tags = toArray(p.tags).map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("");
       const tools = toArray(p.tools).map((t) => `<span class="tag tag-tool">${escapeHtml(t)}</span>`).join("");
@@ -164,7 +173,6 @@ function renderProjects() {
           </div>
 
           <p class="project-overview">${escapeHtml(p.overview || "")}</p>
-
           <div class="tags">${tags}</div>
 
           <div class="project-meta">
@@ -181,69 +189,42 @@ function renderProjects() {
     })
     .join("");
 
-  const count = $("#projectCount");
-  if (count) count.textContent = String(state.data.projects.length);
-
-  wireProjectCardClicks();
+  document.querySelectorAll(".project-card.is-clickable").forEach((card) => {
+    const href = card.getAttribute("data-href");
+    if (!href) return;
+    const go = () => (window.location.href = href);
+    card.addEventListener("click", (e) => {
+      if (e.target.closest("a, button")) return;
+      go();
+    });
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        go();
+      }
+    });
+  });
 }
 
-/* ---------- KPI strip (Sai/Binyam-style) ---------- */
-function renderKpis() {
-  const wrap = $("#kpiGrid");
-  if (!wrap) return;
-
-  wrap.innerHTML = (state.data.kpis || [])
-    .map((k) => `
-      <div class="kpi">
-        <div class="kpi-top">
-          <div class="kpi-label">${escapeHtml(k.label)}</div>
-          <div class="kpi-value">${escapeHtml(k.value)}</div>
-        </div>
-        <div class="kpi-note">${escapeHtml(k.note || "")}</div>
-      </div>
-    `)
-    .join("");
-}
-
-/* ---------- Capabilities grid (Binyam-style) ---------- */
-function renderCapabilities() {
-  const wrap = $("#capGrid");
-  if (!wrap) return;
-
-  wrap.innerHTML = (state.data.capabilities || [])
-    .map((c) => {
-      const chips = toArray(c.chips).map((x) => `<span class="tag">${escapeHtml(x)}</span>`).join("");
-      const bullets = toArray(c.bullets).map((b) => `<li>${escapeHtml(b)}</li>`).join("");
-      return `
-        <div class="cap">
-          <div class="cap-pill">${escapeHtml(c.pill || "Capability")}</div>
-          <h3>${escapeHtml(c.title)}</h3>
-          <p>${escapeHtml(c.desc || "")}</p>
-          <ul>${bullets}</ul>
-          <div class="chips">${chips}</div>
-        </div>
-      `;
-    })
-    .join("");
-}
-
-/* ---------- Skills tree (Hitesh-style grouping) ---------- */
+/* ---------- Skills ---------- */
 function renderSkills() {
   const wrap = $("#skillsTree");
   if (!wrap) return;
 
-  wrap.innerHTML = (state.data.skills || [])
+  wrap.innerHTML = (state.skills || [])
     .map((g) => {
-      const items = toArray(g.items).map((it) => {
-        const lvl = Number(it.level ?? 0);
-        return `
-          <div class="skill">
-            <div class="skill-name">${escapeHtml(it.name)}</div>
-            <div class="skill-level">${escapeHtml(String(lvl))}%</div>
-            <div class="bar" aria-hidden="true"><span style="width:${Math.max(0, Math.min(100, lvl))}%"></span></div>
-          </div>
-        `;
-      }).join("");
+      const items = toArray(g.items)
+        .map((it) => {
+          const lvl = Number(it.level ?? 0);
+          return `
+            <div class="skill">
+              <div class="skill-name">${escapeHtml(it.name)}</div>
+              <div class="skill-level">${escapeHtml(String(lvl))}%</div>
+              <div class="bar" aria-hidden="true"><span style="width:${Math.max(0, Math.min(100, lvl))}%"></span></div>
+            </div>
+          `;
+        })
+        .join("");
       return `
         <div class="skill-group">
           <h3>${escapeHtml(g.domain)}</h3>
@@ -254,12 +235,12 @@ function renderSkills() {
     .join("");
 }
 
-/* ---------- Certifications (Hitesh-style “official” cards) ---------- */
+/* ---------- Certifications ---------- */
 function renderCerts() {
   const wrap = $("#certGrid");
   if (!wrap) return;
 
-  wrap.innerHTML = (state.data.certs || [])
+  wrap.innerHTML = (state.certs || [])
     .map((c) => {
       const verifyHref = (c.verify || "").trim();
       const topRight = `<span class="status ${String(c.status||"").toLowerCase().includes("verify") ? "status-live" : ""}">${escapeHtml(c.status || "")}</span>`;
@@ -282,155 +263,42 @@ function renderCerts() {
     .join("");
 }
 
-/* ---------- Experience timeline + Details modal (Rolind/Herve style) ---------- */
-function uniqExpDomains(items) {
-  const set = new Set();
-  items.forEach((it) => toArray(it.domains).forEach((d) => set.add(d)));
-  return ["All", ...Array.from(set).sort((a,b) => a.localeCompare(b))];
-}
-function renderExpFilters(domains) {
-  const wrap = $("#expFilters");
+/* ---------- Blog ---------- */
+function renderBlog(gridId = "blogGrid") {
+  const wrap = document.getElementById(gridId);
   if (!wrap) return;
 
-  wrap.innerHTML = "";
-  domains.forEach((d) => {
-    const btn = document.createElement("button");
-    btn.className = "chip";
-    btn.type = "button";
-    btn.textContent = d;
-    btn.setAttribute("aria-pressed", d === state.activeExp ? "true" : "false");
-    btn.addEventListener("click", () => {
-      state.activeExp = d;
-      renderExpFilters(domains);
-      renderExperience();
-    });
-    wrap.appendChild(btn);
-  });
-}
-function expMatches(it) {
-  if (state.activeExp === "All") return true;
-  return toArray(it.domains).includes(state.activeExp);
-}
+  const posts = (state.blog || []).slice().sort((a, b) => String(b.date).localeCompare(String(a.date)));
 
-function openModal(title, cmd, html) {
-  const modal = $("#modal");
-  if (!modal) return;
-
-  $("#modalTitle").textContent = title;
-  $("#modalCmd").textContent = cmd || "$ details --open";
-  $("#modalBody").innerHTML = html;
-
-  modal.setAttribute("aria-hidden", "false");
-  document.body.style.overflow = "hidden";
-}
-
-function closeModal() {
-  const modal = $("#modal");
-  if (!modal) return;
-  modal.setAttribute("aria-hidden", "true");
-  document.body.style.overflow = "";
-  $("#modalBody").innerHTML = "";
-}
-
-function wireModal() {
-  const modal = $("#modal");
-  if (!modal) return;
-
-  modal.addEventListener("click", (e) => {
-    const close = e.target.closest("[data-close='true']");
-    if (close) closeModal();
-  });
-
-  document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && modal.getAttribute("aria-hidden") === "false") closeModal();
-  });
-}
-
-function renderExperience() {
-  const wrap = $("#expTimeline");
-  if (!wrap) return;
-
-  const items = (state.data.experience || []).filter(expMatches);
-
-  wrap.innerHTML = items.map((it) => {
-    const domTags = toArray(it.domains).map((d) => `<span class="tag">${escapeHtml(d)}</span>`).join("");
-    const toolTags = toArray(it.tools).map((t) => `<span class="tag tag-tool">${escapeHtml(t)}</span>`).join("");
-    const bullets = toArray(it.bullets).map((b) => `<li>${escapeHtml(b)}</li>`).join("");
-
-    const btnId = `details_${Math.random().toString(16).slice(2)}`;
-
-    // Store details in data-* safely by rendering on click (below).
-    return `
-      <div class="timeline-item">
-        <div class="timeline-head">
-          <div>
-            <h3 class="timeline-title">${escapeHtml(it.title)}</h3>
-            <div class="timeline-meta">${escapeHtml(it.role || "")} • ${escapeHtml(it.when || "")}</div>
+  wrap.innerHTML = posts
+    .map((p) => {
+      const tags = toArray(p.tags).map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("");
+      return `
+        <article class="card blog-card" data-href="${escapeHtml(p.href)}" tabindex="0" role="link" aria-label="Open blog post: ${escapeHtml(p.title)}">
+          <div class="blog-top">
+            <div class="blog-date">${escapeHtml(p.date || "")}</div>
           </div>
-          <button class="btn btn-ghost" type="button" data-details="${escapeHtml(it.title)}">Details</button>
-        </div>
-
-        <div class="tags">${domTags}</div>
-        <ul>${bullets}</ul>
-        <div class="tools-line">${toolTags}</div>
-      </div>
-    `;
-  }).join("");
-
-  // Wire details buttons
-  wrap.querySelectorAll("[data-details]").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const title = btn.getAttribute("data-details");
-      const it = (state.data.experience || []).find((x) => x.title === title);
-      if (!it) return;
-
-      const resp = toArray(it.details?.["Responsibilities"]).map((x) => `<li>${escapeHtml(x)}</li>`).join("");
-      const arch = toArray(it.details?.["Architecture highlights"]).map((x) => `<li>${escapeHtml(x)}</li>`).join("");
-      const tools = toArray(it.tools).map((t) => `<span class="tag tag-tool">${escapeHtml(t)}</span>`).join("");
-      const domains = toArray(it.domains).map((d) => `<span class="tag">${escapeHtml(d)}</span>`).join("");
-
-      const html = `
-        <div class="tags">${domains}</div>
-        <div class="tools-line" style="margin:10px 0 14px;">${tools}</div>
-
-        <h4>Responsibilities</h4>
-        <ul>${resp || "<li>—</li>"}</ul>
-
-        <h4>Architecture highlights</h4>
-        <ul>${arch || "<li>—</li>"}</ul>
+          <h3>${escapeHtml(p.title)}</h3>
+          <p>${escapeHtml(p.summary || "")}</p>
+          <div class="tags">${tags}</div>
+        </article>
       `;
+    })
+    .join("");
 
-      openModal(it.title, "$ details --open --verbose", html);
+  wrap.querySelectorAll("[data-href]").forEach((card) => {
+    const href = card.getAttribute("data-href");
+    const go = () => (window.location.href = href);
+    card.addEventListener("click", (e) => {
+      if (e.target.closest("a, button")) return;
+      go();
     });
-  });
-}
-
-/* ---------- check-health interaction (Sai-like) ---------- */
-function initHealthCheck() {
-  const btn = $("#healthBtn");
-  const panel = $("#healthPanel");
-  if (!btn || !panel) return;
-
-  btn.addEventListener("click", () => {
-    const ok = (label, value, cls) => `
-      <div class="health-row">
-        <div><strong>${escapeHtml(label)}</strong><div class="muted" style="font-size:12px;">${escapeHtml(value)}</div></div>
-        <span class="badge ${cls}">${cls === "ok" ? "OK" : cls === "warn" ? "WARN" : "OFF"}</span>
-      </div>
-    `;
-
-    // Frontend-only signals (no fake business metrics)
-    const hasProjects = Array.isArray(state.data.projects) && state.data.projects.length > 0;
-    const hasFilters = $("#filters")?.children?.length > 0;
-
-    panel.innerHTML = [
-      ok("Projects loaded", hasProjects ? `${state.data.projects.length} projects` : "No data", hasProjects ? "ok" : "off"),
-      ok("Filters ready", hasFilters ? "Tag filters rendered" : "Not rendered", hasFilters ? "ok" : "warn"),
-      ok("Theme toggle", $("#themeToggle") ? "Available" : "Missing", $("#themeToggle") ? "ok" : "warn"),
-      ok("Case study links", state.data.projects.every(p => (p.links?.caseStudy || "").trim()) ? "All projects have case studies" : "Some missing", state.data.projects.every(p => (p.links?.caseStudy || "").trim()) ? "ok" : "warn"),
-    ].join("");
-
-    panel.hidden = false;
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        go();
+      }
+    });
   });
 }
 
@@ -447,43 +315,30 @@ function initMeta() {
 }
 
 (async function main() {
-  initTheme();
   initMeta();
   initRevealAnimations();
-  wireModal();
 
   try {
-    const [projects, kpis, caps, skills, certs, exp] = await Promise.all([
+    const [profile, projects, skills, certs, blog] = await Promise.all([
+      loadJson("/data/profile.json"),
       loadJson("/data/projects.json"),
-      loadJson("/data/kpis.json"),
-      loadJson("/data/capabilities.json"),
       loadJson("/data/skills.json"),
       loadJson("/data/certs.json"),
-      loadJson("/data/experience.json"),
+      loadJson("/data/blog.json"),
     ]);
 
-    state.data.projects = projects;
-    state.data.kpis = kpis;
-    state.data.capabilities = caps;
-    state.data.skills = skills;
-    state.data.certs = certs;
-    state.data.experience = exp;
+    state.profile = profile;
+    state.projects = projects;
+    state.skills = skills;
+    state.certs = certs;
+    state.blog = blog;
 
-    renderKpis();
-    renderCapabilities();
-
-    const tags = uniqTags(state.data.projects);
-    renderProjectFilters(tags);
+    renderProfile();
+    renderFilters(uniqTags(state.projects));
     renderProjects();
-
-    const domains = uniqExpDomains(state.data.experience);
-    renderExpFilters(domains);
-    renderExperience();
-
     renderSkills();
     renderCerts();
-
-    initHealthCheck();
+    renderBlog("blogGrid");
   } catch (e) {
     console.error(e);
   }
