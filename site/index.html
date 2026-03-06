@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AWS Cloud Portfolio</title>
-  <meta name="description" content="AWS/Cloud projects portfolio with case studies, skills, workflows, and live demos." />
+  <title>Lenkov • AWS Cloud Portfolio</title>
+  <meta name="description" content="AWS/Cloud portfolio with case studies, skills tree, and blog." />
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <header class="site-header">
+  <header class="site-header is-sticky">
     <nav class="nav">
       <div class="brand">
         <span class="brand-dot" aria-hidden="true"></span>
@@ -19,12 +19,12 @@
       </div>
 
       <div class="nav-links">
+        <a href="#about">About</a>
         <a href="#projects">Projects</a>
-        <a href="#experience">Experience</a>
         <a href="#skills">Skills</a>
-        <a href="#workflows">Workflows</a>
+        <a href="#blog">Blog</a>
+        <a href="#certifications">Certs</a>
         <a href="#contact">Contact</a>
-        <button id="themeToggle" class="btn btn-ghost" type="button" aria-label="Toggle theme">Theme</button>
       </div>
     </nav>
   </header>
@@ -32,142 +32,103 @@
   <main id="main" class="container">
     <section class="hero" id="top">
       <div class="hero-content reveal">
-        <p class="cmd">$ deploy --aws --secure --cicd</p>
-        <p class="eyebrow">AWS • DevOps • Cloud Engineering</p>
-        <h1>Projects with real infrastructure, security, and delivery pipelines.</h1>
-        <p class="subhead">
-          Hosted on AWS with a private S3 origin behind CloudFront (OAC), HTTPS via ACM, and CI/CD from GitHub Actions.
+        <p class="cmd">$ whoami</p>
+        <p class="eyebrow" id="heroTitle">AWS • DevOps • Cloud Engineering</p>
+        <h1 id="heroHeading">AWS Cloud / DevOps Engineer building reproducible, recruiter-grade projects.</h1>
+        <p class="subhead" id="heroSubhead">
+          I build AWS systems with security + delivery in mind, then document them as case studies (diagrams, decisions, and steps).
         </p>
 
-        <div class="hero-actions">
-          <a class="btn" href="#projects">Explore Projects</a>
-          <a class="btn btn-ghost" href="https://github.com/LenoJay" target="_blank" rel="noreferrer">GitHub</a>
-          <a class="btn btn-ghost" href="#workflows">How it’s delivered</a>
-        </div>
-
-        <div class="hero-metrics">
-          <div class="metric">
-            <div class="metric-value" id="projectCount">—</div>
-            <div class="metric-label">Projects</div>
-          </div>
-          <div class="metric">
-            <div class="metric-value">OIDC</div>
-            <div class="metric-label">No AWS keys</div>
-          </div>
-          <div class="metric">
-            <div class="metric-value">OAC</div>
-            <div class="metric-label">Private origin</div>
-          </div>
-        </div>
+        <div class="hero-actions" id="socialButtons"></div>
+        <div class="hero-keywords" id="keywordChips" aria-label="Specialization keywords"></div>
       </div>
     </section>
 
-    <section class="section" id="impact">
+    <section class="section" id="about">
       <div class="section-head reveal">
-        <p class="cmd">$ impact --summary --format=cards</p>
-        <h2><span class="sec-num">01</span> Impact</h2>
-        <p>Quick proof points from how this portfolio is built and operated.</p>
+        <p class="cmd">$ cat about.md</p>
+        <h2><span class="sec-num">01</span> About</h2>
+        <p>A short intro with highlighted focus areas.</p>
       </div>
 
-      <div class="kpi-grid reveal" id="kpiGrid" aria-label="Impact KPIs"></div>
-    </section>
+      <div class="two-col reveal">
+        <div class="card">
+          <h3>Hi, I’m <span id="aboutName">Lenkov</span>.</h3>
+          <p class="muted" id="aboutText">
+            I’m building a portfolio of <span class="hl">AWS</span> projects that demonstrate <span class="hl">DevOps</span> fundamentals:
+            secure hosting, <span class="hl">CI/CD</span>, event-driven patterns, and practical <span class="hl">security</span>.
+            My goal is to become a <span class="hl">Solutions Architect</span> by proving I can build and explain real systems.
+          </p>
+          <div class="about-badges" id="aboutBadges"></div>
+        </div>
 
-    <section class="section" id="capabilities">
-      <div class="section-head reveal">
-        <p class="cmd">$ cat /etc/capabilities.conf</p>
-        <h2><span class="sec-num">02</span> What I build</h2>
-        <p>My focus areas (cloud, DevOps, security, observability, and AI-on-AWS).</p>
+        <div class="card">
+          <h3>What you’ll find here</h3>
+          <ul class="muted">
+            <li>Projects with consistent cards: Case Study, GitHub, Live, Blog</li>
+            <li>Skills tree grouped by domain (easy to scan)</li>
+            <li>Blog posts documenting architectures and “why” decisions</li>
+          </ul>
+          <div class="note">
+            <strong>Update links:</strong> set your LinkedIn + email once in <code>/data/profile.json</code>.
+          </div>
+        </div>
       </div>
-
-      <div class="cap-grid reveal" id="capGrid" aria-label="Capabilities"></div>
     </section>
 
     <section class="section" id="projects">
       <div class="section-head reveal">
         <p class="cmd">$ projects --list --filter=tags</p>
-        <h2><span class="sec-num">03</span> Projects</h2>
-        <p>Filter by tags. Every project uses the same buttons: Case Study, GitHub, Live, and Blog.</p>
+        <h2><span class="sec-num">02</span> Projects</h2>
+        <p>Filter by tags.</p>
       </div>
 
       <div class="filters reveal" id="filters" aria-label="Project filters"></div>
       <div class="grid reveal" id="projectsGrid" aria-live="polite"></div>
     </section>
 
-    <section class="section" id="experience">
-      <div class="section-head reveal">
-        <p class="cmd">$ grep -R "experience" /var/log/career.log</p>
-        <h2><span class="sec-num">04</span> Experience</h2>
-        <p>Project experience written like responsibilities + architecture highlights (click Details).</p>
-      </div>
-
-      <div class="filters reveal" id="expFilters" aria-label="Experience filters"></div>
-      <div class="timeline reveal" id="expTimeline" aria-label="Experience timeline"></div>
-    </section>
-
     <section class="section" id="skills">
       <div class="section-head reveal">
-        <p class="cmd">$ ./skills --list --verbose</p>
-        <h2><span class="sec-num">05</span> Skills</h2>
-        <p>Grouped by domain (so it’s scannable and honest).</p>
+        <p class="cmd">$ ./skills --list --grouped</p>
+        <h2><span class="sec-num">03</span> Skills</h2>
+        <p>Grouped by domain.</p>
       </div>
 
       <div class="skills-grid reveal" id="skillsTree" aria-label="Skills tree"></div>
     </section>
 
+    <section class="section" id="blog">
+      <div class="section-head reveal">
+        <p class="cmd">$ blog --latest</p>
+        <h2><span class="sec-num">04</span> Blog</h2>
+        <p>Notes, build logs, and short writeups.</p>
+      </div>
+
+      <div class="blog-grid reveal" id="blogGrid" aria-label="Blog posts"></div>
+      <div style="margin-top:14px;" class="reveal">
+        <a class="btn btn-ghost" href="/blog/index.html">View all posts</a>
+      </div>
+    </section>
+
     <section class="section" id="certifications">
       <div class="section-head reveal">
         <p class="cmd">$ certs --verified</p>
-        <h2><span class="sec-num">06</span> Certifications</h2>
-        <p>Verified credentials (add your Credly links when ready).</p>
+        <h2><span class="sec-num">05</span> Certifications</h2>
+        <p>Verified credentials.</p>
       </div>
 
       <div class="cert-grid reveal" id="certGrid" aria-label="Certifications"></div>
     </section>
 
-    <section class="section" id="workflows">
-      <div class="section-head reveal">
-        <p class="cmd">$ runbook --show --portfolio</p>
-        <h2><span class="sec-num">07</span> Architecture & Workflows</h2>
-        <p>How this portfolio is delivered and secured.</p>
-      </div>
-
-      <div class="two-col reveal">
-        <div class="card">
-          <h3>Hosting workflow</h3>
-          <ol>
-            <li>Push to <strong>main</strong> on GitHub</li>
-            <li>GitHub Actions assumes an AWS IAM role via <strong>OIDC</strong> (no stored access keys)</li>
-            <li>Deploy to S3 + CloudFront invalidation</li>
-          </ol>
-          <p class="muted">
-            CloudFront uses Origin Access Control so the S3 bucket can remain private.
-          </p>
-        </div>
-
-        <div class="card">
-          <h3>check-health</h3>
-          <p class="muted">Quick self-check to prove the “ops mindset” (front-end only).</p>
-          <button class="btn" type="button" id="healthBtn">Run check</button>
-          <div class="health-panel" id="healthPanel" hidden></div>
-        </div>
-      </div>
-    </section>
-
     <section class="section" id="contact">
       <div class="section-head reveal">
         <p class="cmd">$ contact --send</p>
-        <h2><span class="sec-num">08</span> Contact</h2>
-        <p>For roles, collaborations, or feedback.</p>
+        <h2><span class="sec-num">06</span> Contact</h2>
+        <p>Get in touch.</p>
       </div>
 
       <div class="card reveal">
-        <div class="contact-grid">
-          <a class="btn" href="mailto:you@example.com">Email</a>
-          <a class="btn btn-ghost" href="https://www.linkedin.com/" target="_blank" rel="noreferrer">LinkedIn</a>
-          <a class="btn btn-ghost" href="https://github.com/LenoJay" target="_blank" rel="noreferrer">GitHub</a>
-          <a class="btn btn-ghost" href="#" aria-disabled="true">Schedule a call</a>
-        </div>
-        <p class="muted">Optional next upgrade: AWS-backed contact form (API Gateway → Lambda → SNS/SES).</p>
+        <div class="contact-grid" id="contactButtons"></div>
       </div>
     </section>
 
@@ -175,20 +136,6 @@
       <p class="muted">© <span id="year"></span> • Built and hosted on AWS.</p>
     </footer>
   </main>
-
-  <div class="modal" id="modal" aria-hidden="true">
-    <div class="modal-backdrop" data-close="true"></div>
-    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-      <div class="modal-head">
-        <div>
-          <p class="cmd" id="modalCmd">$ details --open</p>
-          <h3 id="modalTitle" style="margin:0;">Details</h3>
-        </div>
-        <button class="btn btn-ghost" type="button" data-close="true">Close</button>
-      </div>
-      <div class="modal-body" id="modalBody"></div>
-    </div>
-  </div>
 
   <script src="/js/main.js" defer></script>
 </body>
