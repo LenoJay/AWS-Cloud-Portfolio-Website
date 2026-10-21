@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Lenkov • AWS Cloud Portfolio</title>
+  <title>Leno Jovicevic • AWS Cloud Portfolio</title>
   <meta name="description" content="AWS/Cloud portfolio with case studies, skills tree, and blog." />
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
@@ -11,6 +11,7 @@
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
+  <!-- Sticky banner/nav -->
   <header class="site-header is-sticky">
     <nav class="nav">
       <div class="brand">
@@ -39,7 +40,10 @@
           I build AWS systems with security + delivery in mind, then document them as case studies (diagrams, decisions, and steps).
         </p>
 
+        <!-- Social buttons rendered by JS (with icons) -->
         <div class="hero-actions" id="socialButtons"></div>
+
+        <!-- Keyword chips rendered by JS -->
         <div class="hero-keywords" id="keywordChips" aria-label="Specialization keywords"></div>
       </div>
     </section>
@@ -53,25 +57,28 @@
 
       <div class="two-col reveal">
         <div class="card">
-          <h3>Hi, I’m <span id="aboutName">Lenkov</span>.</h3>
+          <h3>Hi, I’m <span id="aboutName">Leno Jovicevic</span>.</h3>
+
           <p class="muted" id="aboutText">
-            I’m building a portfolio of <span class="hl">AWS</span> projects that demonstrate <span class="hl">DevOps</span> fundamentals:
-            secure hosting, <span class="hl">CI/CD</span>, event-driven patterns, and practical <span class="hl">security</span>.
-            My goal is to become a <span class="hl">Solutions Architect</span> by proving I can build and explain real systems.
+            I’m building a portfolio of <span class="hl">AWS</span> projects that show real <span class="hl">DevOps</span> ability:
+            <span class="hl">secure hosting</span>, <span class="hl">CI/CD</span>, and <span class="hl">event-driven</span> systems.
+            My goal is to earn a junior cloud role and grow into a <span class="hl">Solutions Architect</span> by proving I can build,
+            document, and explain production-style systems.
+            Right now I’m focused on <span class="hl">CloudFront + S3</span> security patterns and <span class="hl">serverless</span>
+            workflows like <span class="hl">EventBridge → Lambda → SNS</span>.
           </p>
+
+          <!-- Extra “specialization chips” shown under the about -->
           <div class="about-badges" id="aboutBadges"></div>
         </div>
 
         <div class="card">
           <h3>What you’ll find here</h3>
           <ul class="muted">
-            <li>Projects with consistent cards: Case Study, GitHub, Live, Blog</li>
-            <li>Skills tree grouped by domain (easy to scan)</li>
-            <li>Blog posts documenting architectures and “why” decisions</li>
+            <li><strong>Case studies</strong> for each project (architecture, decisions, and build steps)</li>
+            <li><strong>Skills</strong> grouped by domain (easy to scan)</li>
+            <li><strong>Blog</strong> posts capturing what I learned building on AWS</li>
           </ul>
-          <div class="note">
-            <strong>Update links:</strong> set your LinkedIn + email once in <code>/data/profile.json</code>.
-          </div>
         </div>
       </div>
     </section>
@@ -91,7 +98,7 @@
       <div class="section-head reveal">
         <p class="cmd">$ ./skills --list --grouped</p>
         <h2><span class="sec-num">03</span> Skills</h2>
-        <p>Grouped by domain.</p>
+        <p>Grouped by domain (no percentages).</p>
       </div>
 
       <div class="skills-grid reveal" id="skillsTree" aria-label="Skills tree"></div>
@@ -105,6 +112,7 @@
       </div>
 
       <div class="blog-grid reveal" id="blogGrid" aria-label="Blog posts"></div>
+
       <div style="margin-top:14px;" class="reveal">
         <a class="btn btn-ghost" href="/blog/index.html">View all posts</a>
       </div>

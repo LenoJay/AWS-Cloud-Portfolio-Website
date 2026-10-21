@@ -65,10 +65,10 @@ function renderProfile() {
   if (!p) return;
 
   const aboutName = $("#aboutName");
-  if (aboutName) aboutName.textContent = p.name || "Lenkov";
+  if (aboutName) aboutName.textContent = p.name || "Leno Jovicevic";
 
   const heroTitle = $("#heroTitle");
-  if (heroTitle) heroTitle.textContent = (p.specializations || []).slice(0,3).join(" • ") || "AWS • DevOps • Cloud";
+  if (heroTitle) heroTitle.textContent = (p.specializations || []).slice(0, 3).join(" • ") || "AWS • DevOps • Cloud";
 
   const keywordChips = $("#keywordChips");
   if (keywordChips) {
@@ -77,7 +77,7 @@ function renderProfile() {
 
   const badges = $("#aboutBadges");
   if (badges) {
-    badges.innerHTML = (p.highlight_keywords || []).slice(0,8).map((k) => `<span class="tag tag-tool">${escapeHtml(k)}</span>`).join("");
+    badges.innerHTML = (p.highlight_keywords || []).slice(0, 10).map((k) => `<span class="tag tag-tool">${escapeHtml(k)}</span>`).join("");
   }
 
   const social = $("#socialButtons");
@@ -137,11 +137,13 @@ function statusClass(status) {
   if (s.includes("plan")) return "status status-planned";
   return "status";
 }
+
 function renderProjects() {
   const grid = $("#projectsGrid");
   if (!grid) return;
 
   const items = state.projects.filter(projectMatches);
+
   grid.innerHTML = items
     .map((p) => {
       const tags = toArray(p.tags).map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("");
@@ -189,9 +191,9 @@ function renderProjects() {
     })
     .join("");
 
+  // Card click navigates to Case Study (buttons remain separate)
   document.querySelectorAll(".project-card.is-clickable").forEach((card) => {
     const href = card.getAttribute("data-href");
-    if (!href) return;
     const go = () => (window.location.href = href);
     card.addEventListener("click", (e) => {
       if (e.target.closest("a, button")) return;
@@ -206,29 +208,19 @@ function renderProjects() {
   });
 }
 
-/* ---------- Skills ---------- */
+/* ---------- Skills (chips, no percentages) ---------- */
 function renderSkills() {
   const wrap = $("#skillsTree");
   if (!wrap) return;
 
+  // Schema: [{ group: "...", items: ["AWS", "S3", ...] }, ...]
   wrap.innerHTML = (state.skills || [])
     .map((g) => {
-      const items = toArray(g.items)
-        .map((it) => {
-          const lvl = Number(it.level ?? 0);
-          return `
-            <div class="skill">
-              <div class="skill-name">${escapeHtml(it.name)}</div>
-              <div class="skill-level">${escapeHtml(String(lvl))}%</div>
-              <div class="bar" aria-hidden="true"><span style="width:${Math.max(0, Math.min(100, lvl))}%"></span></div>
-            </div>
-          `;
-        })
-        .join("");
+      const chips = toArray(g.items).map((it) => `<span class="skill-chip">${escapeHtml(it)}</span>`).join("");
       return `
         <div class="skill-group">
-          <h3>${escapeHtml(g.domain)}</h3>
-          ${items}
+          <h3>${escapeHtml(g.group || "Skills")}</h3>
+          <div class="skill-chip-row">${chips}</div>
         </div>
       `;
     })
@@ -243,7 +235,7 @@ function renderCerts() {
   wrap.innerHTML = (state.certs || [])
     .map((c) => {
       const verifyHref = (c.verify || "").trim();
-      const topRight = `<span class="status ${String(c.status||"").toLowerCase().includes("verify") ? "status-live" : ""}">${escapeHtml(c.status || "")}</span>`;
+      const topRight = `<span class="status ${String(c.status || "").toLowerCase().includes("verify") ? "status-live" : ""}">${escapeHtml(c.status || "")}</span>`;
       const actions = makeAction("Verify", verifyHref, "ghost");
       return `
         <div class="cert">
