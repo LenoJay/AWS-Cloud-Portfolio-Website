@@ -83,14 +83,10 @@
     </section>
 
     <section class="section" id="projects">
-      <div class="section-head reveal">
-        <p class="cmd">$ projects --list --filter=tags</p>
-        <h2><span class="sec-num">02</span> Projects</h2>
-        <p>Filter by tags.</p>
-      </div>
-
-      <div class="filters reveal" id="filters" aria-label="Project filters"></div>
-      <div class="grid reveal" id="projectsGrid" aria-live="polite"></div>
+      <p class="cmd">$ ls ~/projects</p>
+      <h2>Projects</h2>
+      <!-- Cards rendered by main.js from data/projects.json -->
+      <div class="project-grid" id="projectsGrid"></div>
     </section>
 
     <section class="section" id="skills">

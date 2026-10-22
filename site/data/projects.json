@@ -26,6 +26,15 @@
     ],
     "status": "Live",
     "featured": true,
+    "diagram": {
+      "label": "Architecture: user to Route 53 to CloudFront to private S3, deployed by GitHub Actions with OIDC",
+      "rows": [
+        { "nodes": ["User", "Route 53", "CloudFront", "S3 (private)"] },
+        { "nodes": ["GitHub Actions"], "note": "OIDC ⇢ sync + invalidate" }
+      ],
+      "highlight": ["CloudFront"],
+      "dashed": ["GitHub Actions"]
+    },
     "links": {
       "caseStudy": "/projects/aws-static-portfolio/index.html",
       "github": "https://github.com/LenoJay/AWS-Cloud-Portfolio-Website",
@@ -59,6 +68,14 @@
     ],
     "status": "In progress",
     "featured": true,
+    "diagram": {
+      "label": "Architecture: React app with Cognito sign-in sends positions to Amazon Location; geofence events go through EventBridge and Lambda to SNS email alerts",
+      "rows": [
+        { "nodes": ["React + Cognito", "Amazon Location"] },
+        { "nodes": ["EventBridge", "Lambda", "SNS email"] }
+      ],
+      "highlight": ["Amazon Location"]
+    },
     "links": {
       "caseStudy": "/projects/personal-tracker/index.html",
       "github": "https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio/tree/main/AWS-Social-Life-Projects-Portfolio/Project1_PersonalTracker",
@@ -90,6 +107,14 @@
     ],
     "status": "Planned",
     "featured": false,
+    "diagram": {
+      "label": "Planned architecture: mood log to Comprehend sentiment and a Lex chat, stored in DynamoDB",
+      "rows": [
+        { "nodes": ["Mood log", "Comprehend", "DynamoDB"] },
+        { "nodes": ["Lex chat"], "note": "weekly summary" }
+      ],
+      "planned": true
+    },
     "links": {
       "caseStudy": "/projects/ai-mood-tracker/index.html",
       "github": "https://github.com/LenoJay/AWS-Social-Life-Projects-Portfolio",

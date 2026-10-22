@@ -2,7 +2,6 @@ const $ = (sel) => document.querySelector(sel);
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const state = {
-  activeTag: "All",
   projects: [],
   skills: [],
   certs: [],
@@ -197,109 +196,79 @@ function renderProfile() {
 }
 
 /* ---------- Projects ---------- */
-function uniqTags(projects) {
-  const set = new Set();
-  projects.forEach((p) => toArray(p.tags).forEach((t) => set.add(t)));
-  return ["All", ...Array.from(set).sort((a, b) => a.localeCompare(b))];
-}
-function renderFilters(tags) {
-  const wrap = $("#filters");
-  if (!wrap) return;
-  wrap.innerHTML = "";
-  tags.forEach((t) => {
-    const btn = document.createElement("button");
-    btn.className = "chip";
-    btn.type = "button";
-    btn.textContent = t;
-    btn.setAttribute("aria-pressed", t === state.activeTag ? "true" : "false");
-    btn.addEventListener("click", () => {
-      state.activeTag = t;
-      renderFilters(tags);
-      renderProjects();
-    });
-    wrap.appendChild(btn);
-  });
-}
-function projectMatches(p) {
-  if (state.activeTag === "All") return true;
-  return toArray(p.tags).includes(state.activeTag);
-}
-function statusClass(status) {
+function statusPill(status) {
   const s = String(status || "").toLowerCase();
-  if (s.includes("live")) return "status status-live";
-  if (s.includes("progress")) return "status status-progress";
-  if (s.includes("plan")) return "status status-planned";
-  return "status";
+  if (s.includes("live")) return `<span class="pill pill-live">● live</span>`;
+  if (s.includes("progress")) return `<span class="pill pill-progress">● in progress</span>`;
+  if (s.includes("plan")) return `<span class="pill pill-planned">○ planned</span>`;
+  return s ? `<span class="pill">${escapeHtml(s)}</span>` : "";
+}
+
+// Arrow between diagram boxes; its dashes move so data visibly flows
+const FLOW_ARROW = `<svg class="dg-arrow" viewBox="0 0 26 10" aria-hidden="true" focusable="false"><path class="dg-line" d="M1 5H20"/><path class="dg-head" d="M18 1.5 23 5l-5 3.5"/></svg>`;
+
+// Schema: { label, rows: [{ nodes: [...], note }], highlight: [...], dashed: [...], planned }
+function renderDiagram(d) {
+  if (!d || !Array.isArray(d.rows)) return "";
+  const hl = new Set(toArray(d.highlight));
+  const dashed = new Set(toArray(d.dashed));
+  const rows = d.rows
+    .map((r) => {
+      // Each arrow is kept together with the box it points to, so a wrapped row never strands an arrow
+      const nodes = toArray(r.nodes).map((n, i) => {
+        const cls = ["dg-node", hl.has(n) ? "is-hl" : "", dashed.has(n) ? "is-dashed" : ""].join(" ").trim();
+        const box = `<span class="${cls}">${escapeHtml(n)}</span>`;
+        return i === 0 ? box : `<span class="dg-step">${FLOW_ARROW}${box}</span>`;
+      });
+      const note = r.note ? `<span class="dg-step">${FLOW_ARROW}<span class="dg-note">${escapeHtml(r.note)}</span></span>` : "";
+      return `<div class="dg-row">${nodes.join("")}${note}</div>`;
+    })
+    .join("");
+  return `<div class="dg${d.planned ? " is-planned" : ""}" role="img" aria-label="${escapeHtml(d.label || "")}">${rows}</div>`;
 }
 
 function renderProjects() {
   const grid = $("#projectsGrid");
   if (!grid) return;
 
-  const items = state.projects.filter(projectMatches);
-
-  grid.innerHTML = items
+  grid.innerHTML = state.projects
     .map((p) => {
-      const tags = toArray(p.tags).map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("");
-      const tools = toArray(p.tools).map((t) => `<span class="tag tag-tool">${escapeHtml(t)}</span>`).join("");
-      const focusText = toArray(p.focus).join(", ") || "—";
-
+      const tools = toArray(p.tools).map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("");
       const caseStudyHref = (p.links?.caseStudy || "").trim();
-      const githubHref = (p.links?.github || "").trim();
-      const liveHref = (p.links?.live || "").trim();
-      const blogHref = (p.links?.blog || "").trim();
+      const planned = String(p.status || "").toLowerCase().includes("plan");
 
-      const isClickable = Boolean(caseStudyHref);
-      const attrs = isClickable
-        ? `class="card project-card is-clickable" data-href="${escapeHtml(caseStudyHref)}" tabindex="0" role="link" aria-label="Open case study: ${escapeHtml(p.title)}"`
-        : `class="card project-card"`;
-
-      const actions = [
-        makeAction("Case Study", caseStudyHref, "primary"),
-        makeAction("GitHub", githubHref, "ghost"),
-        makeAction("Live", liveHref, "ghost"),
-        makeAction("Blog", blogHref, "ghost"),
-      ].join("");
+      // The case-study link stretches over the whole card; GitHub, Live and Blog stay separate buttons
+      const more = caseStudyHref
+        ? `<a class="pc-link" href="${escapeHtml(caseStudyHref)}" aria-label="${planned ? "See the plan" : "Read case study"}: ${escapeHtml(p.title)}">${planned ? "see the plan" : "read case study"} →</a>`
+        : "";
+      const buttons = [
+        ["GitHub", p.links?.github],
+        ["Live", p.links?.live],
+        ["Blog", p.links?.blog],
+      ]
+        .filter(([, href]) => (href || "").trim())
+        .map(([label, href]) => makeAction(label, href.trim(), "ghost"))
+        .join("");
 
       return `
-        <article ${attrs}>
-          <div class="project-head">
-            <h3>${escapeHtml(p.title)}</h3>
-            <span class="${statusClass(p.status)}">${escapeHtml(p.status || "")}</span>
-          </div>
-
-          <p class="project-overview">${escapeHtml(p.overview || "")}</p>
-          <div class="tags">${tags}</div>
-
-          <div class="project-meta">
-            <div><strong>Focus:</strong> ${escapeHtml(focusText)}</div>
-            <div class="tools-row">
-              <strong>Tools:</strong>
-              <div class="tools">${tools || "<span class=\"muted\">—</span>"}</div>
+        <article class="project-card">
+          <div class="pc-cover">${renderDiagram(p.diagram)}</div>
+          <div class="pc-body">
+            <div class="pc-head">
+              <h3>${escapeHtml(p.title)}</h3>
+              ${statusPill(p.status)}
+            </div>
+            <p class="pc-text">${escapeHtml(p.overview || "")}</p>
+            <div class="tags">${tools}</div>
+            <div class="pc-foot">
+              ${more}
+              <div class="pc-buttons">${buttons}</div>
             </div>
           </div>
-
-          <div class="card-actions">${actions}</div>
         </article>
       `;
     })
     .join("");
-
-  // Card click navigates to Case Study (buttons remain separate)
-  document.querySelectorAll(".project-card.is-clickable").forEach((card) => {
-    const href = card.getAttribute("data-href");
-    const go = () => (window.location.href = href);
-    card.addEventListener("click", (e) => {
-      if (e.target.closest("a, button")) return;
-      go();
-    });
-    card.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        go();
-      }
-    });
-  });
 }
 
 /* ---------- Skills (chips, no percentages) ---------- */
@@ -422,7 +391,6 @@ function initMeta() {
     state.blog = blog;
 
     renderProfile();
-    renderFilters(uniqTags(state.projects));
     renderProjects();
     renderSkills();
     renderCerts();
