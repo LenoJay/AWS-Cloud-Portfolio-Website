@@ -1,11 +1,19 @@
 :root{
-  color-scheme: light dark;
-  --bg: #0b0c10;
-  --panel: #11131a;
-  --text: #e8e8ee;
-  --muted: #a8acb8;
-  --stroke: rgba(255,255,255,0.12);
-  --accent: #7c5cff;
+  color-scheme: dark;
+  --bg: #0B0D0C;
+  --panel: #121614;
+  --panel-2: #0E1110;
+  --line: #232A26;
+  --text: #E6EBE7;
+  --muted: #8E9A93;
+  --stroke: var(--line);
+  --accent: #B5F23D;
+  --accent-hover: #D6FF85;
+  --amber: #FEBC2E;
+
+  --font-sans: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+  --font-serif: 'Instrument Serif', Georgia, serif;
 
   --bg2: #f6f7fb;
   --panel2: #ffffff;
@@ -21,7 +29,7 @@
 html, body { height: 100%; }
 body{
   margin:0;
-  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  font-family: var(--font-sans);
   background: var(--bg);
   color: var(--text);
   line-height: 1.5;
