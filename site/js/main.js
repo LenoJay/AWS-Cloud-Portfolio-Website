@@ -22,17 +22,82 @@ function toArray(x) {
   return [String(x)];
 }
 
-function initRevealAnimations() {
-  const els = document.querySelectorAll(".reveal");
-  if (!("IntersectionObserver" in window)) {
-    els.forEach((e) => e.classList.add("in-view"));
-    return;
-  }
-  const io = new IntersectionObserver(
-    (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add("in-view")),
-    { threshold: 0.12 }
-  );
-  els.forEach((e) => io.observe(e));
+/* ---------- Scroll motion (GSAP ScrollTrigger, homepage) ---------- */
+function initScrollMotion() {
+  if (reduceMotion || !window.gsap || !window.ScrollTrigger) return; // content simply stays visible
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Each section's "$ command" line types itself out once, when it scrolls into view
+  document.querySelectorAll(".section > .cmd").forEach((el) => {
+    const text = el.textContent;
+    const chars = { n: 0 };
+    const show = () => { el.textContent = text.slice(0, Math.round(chars.n)) || " "; };
+    show();
+    gsap.to(chars, {
+      n: text.length,
+      duration: Math.min(0.9, text.length * 0.05),
+      ease: "none",
+      onUpdate: show,
+      scrollTrigger: { trigger: el, start: "top 90%", once: true },
+    });
+  });
+
+  // Headings and cards fade up as they arrive, cards in a short stagger
+  const items = ".section > h2, .about-text, .project-card, .skill-card, .cert-card, .post-list, .json-block";
+  gsap.set(items, { autoAlpha: 0, y: 24 });
+  ScrollTrigger.batch(items, {
+    start: "top 92%",
+    once: true,
+    onEnter: (els) =>
+      gsap.to(els, {
+        autoAlpha: 1,
+        y: 0,
+        duration: 0.5,
+        stagger: 0.08,
+        ease: "power2.out",
+        clearProps: "transform,opacity,visibility", // hand hover effects back to the CSS
+      }),
+  });
+}
+
+/* ---------- Smooth scrolling for in-page links only ---------- */
+// Not CSS scroll-behavior: that also animates the jump when a page opens at /#contact,
+// and ScrollTrigger interrupts it halfway. Clicks animate; page loads jump straight there.
+function initSmoothAnchors() {
+  document.addEventListener("click", (e) => {
+    const link = e.target.closest('a[href^="#"]');
+    if (!link || link.getAttribute("href").length < 2) return;
+    const target = document.getElementById(link.getAttribute("href").slice(1));
+    if (!target) return;
+    e.preventDefault();
+    target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+    history.pushState(null, "", link.getAttribute("href"));
+  });
+}
+
+/* ---------- Scroll progress: thin lime bar under the title bar (every page) ---------- */
+function initScrollProgress() {
+  const header = $(".site-header");
+  if (!header) return;
+  const bar = document.createElement("div");
+  bar.className = "scroll-progress";
+  bar.setAttribute("aria-hidden", "true");
+  header.appendChild(bar);
+
+  let queued = false;
+  const update = () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    bar.style.transform = `scaleX(${max > 0 ? Math.min(1, window.scrollY / max) : 0})`;
+    queued = false;
+  };
+  window.addEventListener("scroll", () => {
+    if (!queued) {
+      queued = true;
+      requestAnimationFrame(update);
+    }
+  }, { passive: true });
+  window.addEventListener("resize", update);
+  update();
 }
 
 /* ---------- Hero intro (GSAP, runs once, under 2.5 s) ---------- */
@@ -128,15 +193,14 @@ async function heroBackground() {
   new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop())).observe(el);
 }
 
-function makeAction(label, href, kind, iconSvg) {
-  const clsBase = kind === "primary" ? "btn" : "btn btn-ghost";
-  const cls = iconSvg ? `${clsBase} btn-icon` : clsBase;
+function makeAction(label, href, kind) {
+  const cls = kind === "primary" ? "btn btn-primary" : "btn btn-ghost";
 
   if (!href) return `<span class="${cls} is-disabled" aria-disabled="true">${escapeHtml(label)}</span>`;
 
   const isExternal = /^https?:\/\//i.test(href);
   const extra = isExternal ? ` target="_blank" rel="noreferrer"` : "";
-  return `<a class="${cls}" href="${escapeHtml(href)}"${extra}>${iconSvg || ""}${escapeHtml(label)}</a>`;
+  return `<a class="${cls}" href="${escapeHtml(href)}"${extra}>${escapeHtml(label)}</a>`;
 }
 
 /* ---------- Projects ---------- */
@@ -331,7 +395,8 @@ function initMeta() {
   heroIntro();
   heroBackground();
   initSpotlight();
-  initRevealAnimations();
+  initSmoothAnchors();
+  initScrollProgress();
 
   try {
     const [projects, skills, certs, blog] = await Promise.all([
@@ -353,4 +418,7 @@ function initMeta() {
   } catch (e) {
     console.error(e);
   }
+
+  // After rendering, so the cards exist; runs even if a JSON file failed
+  initScrollMotion();
 })();
