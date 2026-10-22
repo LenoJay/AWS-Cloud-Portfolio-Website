@@ -42,18 +42,19 @@ function initScrollMotion() {
     });
   });
 
-  // Headings and cards fade up as they arrive, cards in a short stagger
+  // Headings and cards fade up as they arrive, cards in a short stagger.
+  // Opacity only (not autoAlpha): hidden-by-visibility links can't be reached with the Tab key.
   const items = ".section > h2, .about-text, .project-card, .skill-card, .cert-card, .post-list, .json-block";
-  gsap.set(items, { autoAlpha: 0, y: 24 });
+  gsap.set(items, { opacity: 0, y: 24 });
   ScrollTrigger.batch(items, {
     start: "top 92%",
     once: true,
     onEnter: (els) =>
       gsap.to(els, {
-        autoAlpha: 1,
+        opacity: 1,
         y: 0,
         duration: 0.5,
-        stagger: 0.08,
+        stagger: Math.min(0.08, 0.4 / els.length), // a big jump (End key, ~/contact) still settles quickly
         ease: "power2.out",
         clearProps: "transform,opacity,visibility", // hand hover effects back to the CSS
       }),
