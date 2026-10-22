@@ -248,6 +248,24 @@ body[data-theme="light"] .tag{ border: 1px solid var(--stroke2); }
   border-top: 1px solid var(--stroke);
 }
 
+/* Vim-style status bar footer */
+.status-bar{
+  display:flex;
+  flex-wrap: wrap;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  border-top: 1px solid var(--line);
+}
+.status-bar > span{ padding: 6px 12px; }
+.sb-mode{ background: var(--accent); color: var(--bg); font-weight: 700; }
+.sb-branch{ background: #1F2622; color: var(--text); }
+.sb-info{ flex: 1 1 auto; color: var(--muted); }
+.sb-meta{ color: var(--muted); }
+@media (max-width: 720px){
+  .sb-meta{ display: none; }
+}
+
 .reveal{
   opacity: 0;
   transform: translateY(10px);
