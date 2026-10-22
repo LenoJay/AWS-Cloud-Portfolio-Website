@@ -438,51 +438,73 @@ body[data-theme="light"] .cap .cap-pill{ border: 1px solid var(--stroke2); }
 .cap ul{ margin: 0 0 12px; padding-left: 18px; color: var(--muted); }
 .cap .chips{ display:flex; flex-wrap:wrap; gap: 6px; }
 
-/* Skills tree */
+/* Skills tree: grouped cards with logo chips and a cursor spotlight */
 .skills-grid{
   display:grid;
-  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: 16px;
+}
+.skill-card{
+  position: relative;
+  display: flex;
+  flex-direction: column;
   gap: 14px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  transition: border-color .25s ease;
 }
-.skill-group{
-  grid-column: span 6;
-  border: 1px solid var(--stroke);
-  border-radius: var(--radius);
-  padding: 16px;
-  background: rgba(255,255,255,0.03);
+.skill-card:hover{ border-color: rgba(181,242,61,0.55); }
+.skill-card::before{
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(260px circle at var(--x, 50%) var(--y, 50%), rgba(181,242,61,0.12), transparent 65%);
+  opacity: 0;
+  transition: opacity .3s ease;
+  pointer-events: none;
 }
-body[data-theme="light"] .skill-group{ border: 1px solid var(--stroke2); background: var(--panel2); }
-.skill-group h3{ margin: 0 0 10px; }
-.skill{
-  display:grid;
-  grid-template-columns: 1fr auto;
-  gap: 10px;
-  align-items:center;
-  padding: 10px 0;
-  border-top: 1px solid rgba(255,255,255,0.06);
+.skill-card:hover::before{ opacity: 1; }
+.skill-card h3{ position: relative; margin: 0; font-size: 17px; }
+.skill-chips{ position: relative; display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.skill-chip{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px 6px 6px;
+  font-size: 13px;
+  color: #C9D2CC;
+  border: 1px solid #2C3530;
+  border-radius: 8px;
+  transition: border-color .2s ease, color .2s ease;
 }
-body[data-theme="light"] .skill{ border-top: 1px solid rgba(0,0,0,0.06); }
-.skill:first-of-type{ border-top: none; }
-.skill .skill-name{ font-weight: 650; }
-.skill .skill-level{ color: var(--muted); font-size: 12px; }
-.bar{
-  grid-column: 1 / -1;
-  height: 10px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.08);
-  overflow:hidden;
+.skill-chip:hover{ border-color: var(--accent); color: var(--text); }
+.skill-chip.is-roadmap{ border-style: dashed; color: var(--muted); }
+.skill-ico{
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: #1F2622;
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 10px;
 }
-body[data-theme="light"] .bar{
-  background: rgba(0,0,0,0.06);
-  border: 1px solid rgba(0,0,0,0.08);
+/* Real logo in one colour: the SVG is used as a mask over a lime fill */
+.skill-ico.has-logo::before{
+  content: "";
+  width: 13px;
+  height: 13px;
+  background-color: currentColor;
+  -webkit-mask: var(--logo) center / contain no-repeat;
+  mask: var(--logo) center / contain no-repeat;
 }
-.bar > span{
-  display:block;
-  height: 100%;
-  width: 0%;
-  background: rgba(124,92,255,0.55);
-}
+.skills-note{ margin: 20px 0 0; font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
 
 /* Experience timeline */
 .timeline{

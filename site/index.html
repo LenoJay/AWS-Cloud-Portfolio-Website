@@ -90,13 +90,11 @@
     </section>
 
     <section class="section" id="skills">
-      <div class="section-head reveal">
-        <p class="cmd">$ ./skills --list --grouped</p>
-        <h2><span class="sec-num">03</span> Skills</h2>
-        <p>Grouped by domain (no percentages).</p>
-      </div>
-
-      <div class="skills-grid reveal" id="skillsTree" aria-label="Skills tree"></div>
+      <p class="cmd">$ ls -la ~/skills</p>
+      <h2>Skills tree</h2>
+      <!-- Grouped cards rendered by main.js from data/skills.json -->
+      <div class="skills-grid" id="skillsTree"></div>
+      <p class="skills-note">// grouped by domain · no percentages</p>
     </section>
 
     <section class="section" id="blog">

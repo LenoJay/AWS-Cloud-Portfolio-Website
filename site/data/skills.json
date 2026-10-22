@@ -1,26 +1,63 @@
 [
   {
     "group": "Cloud & Infrastructure",
-    "items": ["AWS", "S3", "CloudFront", "Route 53", "ACM", "VPC (basics)", "IAM (least privilege)"]
+    "items": [
+      { "name": "AWS", "short": "AWS" },
+      { "name": "S3", "short": "S3" },
+      { "name": "CloudFront", "short": "CF" },
+      { "name": "Route 53", "short": "53" },
+      { "name": "ACM", "short": "AC" },
+      { "name": "VPC (basics)", "short": "VP" },
+      { "name": "IAM (least privilege)", "short": "IA" }
+    ]
   },
   {
     "group": "Serverless & Event-Driven",
-    "items": ["Lambda", "EventBridge", "SNS", "Cognito", "DynamoDB (basic patterns)", "API Gateway (concepts)"]
+    "items": [
+      { "name": "Lambda", "short": "λ" },
+      { "name": "EventBridge", "short": "EB" },
+      { "name": "SNS", "short": "SN" },
+      { "name": "Cognito", "short": "CG" },
+      { "name": "DynamoDB (basic patterns)", "short": "DB" },
+      { "name": "API Gateway (concepts)", "short": "AG" }
+    ]
   },
   {
     "group": "DevOps & Delivery",
-    "items": ["GitHub Actions", "OIDC federation", "Deploy automation", "Versioning + release notes", "Git/GitHub"]
+    "items": [
+      { "name": "GitHub Actions", "icon": "githubactions" },
+      { "name": "OIDC federation", "icon": "openid" },
+      { "name": "Deploy automation", "short": ">_" },
+      { "name": "Versioning + release notes", "short": "v1" },
+      { "name": "Git/GitHub", "icon": "git" }
+    ]
   },
   {
     "group": "Observability",
-    "items": ["CloudWatch Logs", "Metric filters", "Alarms", "Dashboards (basic)"]
+    "items": [
+      { "name": "CloudWatch Logs", "short": "CW" },
+      { "name": "Metric filters", "short": "MF" },
+      { "name": "Alarms", "short": "AL" },
+      { "name": "Dashboards (basic)", "short": "DS" }
+    ]
   },
   {
     "group": "Security",
-    "items": ["Private S3 origin", "CloudFront OAC/OAI (concepts)", "Secure headers (basic)", "WAF (roadmap)", "KMS (roadmap)"]
+    "items": [
+      { "name": "Private S3 origin", "short": "S3" },
+      { "name": "CloudFront OAC/OAI (concepts)", "short": "OA" },
+      { "name": "Secure headers (basic)", "short": "SH" },
+      { "name": "WAF (roadmap)", "short": "WF" },
+      { "name": "KMS (roadmap)", "short": "KM" }
+    ]
   },
   {
     "group": "AI on AWS (roadmap)",
-    "items": ["Comprehend (sentiment)", "Lex (chat)", "Personalize (concepts)", "SageMaker (concepts)"]
+    "items": [
+      { "name": "Comprehend (sentiment)", "short": "CP" },
+      { "name": "Lex (chat)", "short": "LX" },
+      { "name": "Personalize (concepts)", "short": "PZ" },
+      { "name": "SageMaker (concepts)", "short": "SM" }
+    ]
   }
 ]

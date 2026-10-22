@@ -272,22 +272,54 @@ function renderProjects() {
 }
 
 /* ---------- Skills (chips, no percentages) ---------- */
+// Simple Icons, pinned. It has GitHub/Git/OpenID logos but no AWS logos, so AWS chips use a lettered tile.
+const ICON_CDN = "https://cdn.jsdelivr.net/npm/simple-icons@16.33.0/icons/";
+
+function skillTile(it) {
+  if (it.icon && /^[a-z0-9]+$/.test(it.icon)) {
+    return `<span class="skill-ico has-logo" style="--logo: url('${ICON_CDN}${it.icon}.svg')" aria-hidden="true"></span>`;
+  }
+  const short = it.short || it.name.slice(0, 2).toUpperCase();
+  return `<span class="skill-ico" aria-hidden="true">${escapeHtml(short)}</span>`;
+}
+
 function renderSkills() {
   const wrap = $("#skillsTree");
   if (!wrap) return;
 
-  // Schema: [{ group: "...", items: ["AWS", "S3", ...] }, ...]
+  // Schema: [{ group: "...", items: [{ name, short } | { name, icon } | "name"] }, ...]
   wrap.innerHTML = (state.skills || [])
     .map((g) => {
-      const chips = toArray(g.items).map((it) => `<span class="skill-chip">${escapeHtml(it)}</span>`).join("");
+      // "(roadmap)" skills are shown dashed, so it's clear they're not claimed yet
+      const groupRoadmap = /roadmap/i.test(g.group || "");
+      const chips = toArray(g.items)
+        .map((raw) => (typeof raw === "string" ? { name: raw } : raw))
+        .map((it) => {
+          const roadmap = groupRoadmap || /roadmap/i.test(it.name) ? " is-roadmap" : "";
+          return `<li class="skill-chip${roadmap}">${skillTile(it)}${escapeHtml(it.name)}</li>`;
+        })
+        .join("");
       return `
-        <div class="skill-group">
+        <div class="skill-card">
           <h3>${escapeHtml(g.group || "Skills")}</h3>
-          <div class="skill-chip-row">${chips}</div>
+          <ul class="skill-chips">${chips}</ul>
         </div>
       `;
     })
     .join("");
+}
+
+// Soft lime spotlight that follows the cursor inside each skill card (mouse only, motion on)
+function initSpotlight() {
+  const wrap = $("#skillsTree");
+  if (!wrap || reduceMotion || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  wrap.addEventListener("pointermove", (e) => {
+    const card = e.target.closest(".skill-card");
+    if (!card) return;
+    const r = card.getBoundingClientRect();
+    card.style.setProperty("--x", `${e.clientX - r.left}px`);
+    card.style.setProperty("--y", `${e.clientY - r.top}px`);
+  });
 }
 
 /* ---------- Certifications ---------- */
@@ -373,6 +405,7 @@ function initMeta() {
   initMeta();
   heroIntro();
   heroBackground();
+  initSpotlight();
   initRevealAnimations();
 
   try {
