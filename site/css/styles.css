@@ -242,12 +242,6 @@ body[data-theme="light"] .tag{ border: 1px solid var(--stroke2); }
 
 .muted{ color: var(--muted); }
 
-.footer{
-  margin-top: 70px;
-  padding-top: 18px;
-  border-top: 1px solid var(--stroke);
-}
-
 /* Vim-style status bar footer */
 .status-bar{
   display:flex;

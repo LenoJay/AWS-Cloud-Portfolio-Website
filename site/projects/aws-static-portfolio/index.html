@@ -4,25 +4,28 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>AWS Static Portfolio Website • Case Study</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap" />
   <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
+  <!-- Terminal window: wraps the whole page -->
+  <div class="term">
+
+  <!-- Terminal title bar (sticky header) -->
   <header class="site-header">
-    <nav class="nav">
-      <div class="brand">
-        <span class="brand-dot" aria-hidden="true"></span>
-        <a href="/#top" class="brand-link">My Cloud Portfolio</a>
-      </div>
-      <div class="nav-links">
-        <a href="/#projects">Projects</a>
-        <a href="/#experience">Experience</a>
-        <a href="/#skills">Skills</a>
-        <a href="/#workflows">Workflows</a>
-        <a href="/#contact">Contact</a>
-        <button id="themeToggle" class="btn btn-ghost" type="button" aria-label="Toggle theme">Theme</button>
-      </div>
+    <div class="term-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+    <a href="/" class="term-prompt">leno@lenojay<span class="muted">:</span><span class="accent">~/projects</span></a>
+    <nav class="term-nav" aria-label="Main">
+      <a href="/#about">~/about</a>
+      <a href="/#projects">~/projects</a>
+      <a href="/#skills">~/skills</a>
+      <a href="/#certifications">~/certs</a>
+      <a href="/blog/index.html">~/blog</a>
+      <a href="/#contact">~/contact</a>
     </nav>
   </header>
 
@@ -90,11 +93,16 @@
         </div>
       </div>
     </section>
-
-    <footer class="footer">
-      <p class="muted">© <span id="year"></span> • Built and hosted on AWS.</p>
-    </footer>
   </main>
+
+  <!-- Status bar footer (Vim style) -->
+  <footer class="status-bar">
+    <span class="sb-mode">NORMAL</span>
+    <span class="sb-branch">main</span>
+    <span class="sb-info">lenojay.com · built on S3 + CloudFront · deployed by GitHub Actions</span>
+    <span class="sb-meta">utf-8 · © <span id="year">2026</span></span>
+  </footer>
+  </div>
 
   <script src="/js/main.js" defer></script>
 </body>
