@@ -345,7 +345,7 @@ function renderCerts() {
         ? `<img class="cert-img" src="${escapeHtml(badge)}" alt="" width="64" height="64" loading="lazy" />`
         : `<span class="cert-fallback" aria-hidden="true">${escapeHtml(c.issuer || "")}</span>`;
       const meta = [c.year, String(c.status || "").toLowerCase()].filter(Boolean).map(escapeHtml).join(" · ");
-      const verifyText = verify ? ` · verify${/credly/i.test(verify) ? " on Credly" : ""} →` : "";
+      const verifyText = verify ? ` · <span class="cert-verify">verify${/credly/i.test(verify) ? " on Credly" : ""} →</span>` : "";
       const body = `${art}<span class="cert-text"><strong>${escapeHtml(c.name)}</strong><span class="cert-meta">${meta}${verifyText}</span></span>`;
       return verify
         ? `<a class="cert-card" href="${escapeHtml(verify)}" target="_blank" rel="noreferrer">${body}</a>`

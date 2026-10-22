@@ -3,16 +3,16 @@
     "name": "AWS Certified Cloud Practitioner",
     "issuer": "AWS",
     "year": "2025",
-    "verify": "",
-    "badge": "",
+    "verify": "https://www.credly.com/badges/2b877b70-1dd8-40aa-a7f3-be13201944e1",
+    "badge": "https://images.credly.com/size/340x340/images/00634f82-b07f-4bbd-a6bb-53de397fc3a6/image.png",
     "status": "Verified"
   },
   {
     "name": "AWS Cloud Quest: Cloud Practitioner",
     "issuer": "AWS",
     "year": "2025",
-    "verify": "",
-    "badge": "",
+    "verify": "https://www.credly.com/badges/6faaff40-f13c-41c7-9d57-776d7c3f5895",
+    "badge": "https://images.credly.com/size/340x340/images/30816e43-2550-4e1c-be22-3f03c5573bb9/blob",
     "status": "Completed"
   }
 ]

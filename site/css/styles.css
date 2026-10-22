@@ -397,6 +397,7 @@ h1{ margin: 0 0 10px; font-size: clamp(28px, 4vw, 46px); line-height: 1.1; lette
 .cert-text{ display: flex; flex-direction: column; gap: 2px; }
 .cert-text strong{ font-size: 16px; }
 .cert-meta{ font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
+.cert-verify{ white-space: nowrap; color: var(--accent); }
 
 .hero-actions{ flex-wrap: wrap; }
 
