@@ -14,22 +14,20 @@
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
 
-  <!-- Sticky banner/nav -->
-  <header class="site-header is-sticky">
-    <nav class="nav">
-      <div class="brand">
-        <span class="brand-dot" aria-hidden="true"></span>
-        <a href="#top" class="brand-link">My Cloud Portfolio</a>
-      </div>
+  <!-- Terminal window: wraps the whole page -->
+  <div class="term">
 
-      <div class="nav-links">
-        <a href="#about">About</a>
-        <a href="#projects">Projects</a>
-        <a href="#skills">Skills</a>
-        <a href="#blog">Blog</a>
-        <a href="#certifications">Certs</a>
-        <a href="#contact">Contact</a>
-      </div>
+  <!-- Terminal title bar (sticky header) -->
+  <header class="site-header">
+    <div class="term-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+    <a href="#top" class="term-prompt">leno@lenojay<span class="muted">:</span><span class="accent">~</span></a>
+    <nav class="term-nav" aria-label="Main">
+      <a href="#about">~/about</a>
+      <a href="#projects">~/projects</a>
+      <a href="#skills">~/skills</a>
+      <a href="#certifications">~/certs</a>
+      <a href="#blog">~/blog</a>
+      <a href="#contact">~/contact</a>
     </nav>
   </header>
 
@@ -147,6 +145,7 @@
       <p class="muted">© <span id="year"></span> • Built and hosted on AWS.</p>
     </footer>
   </main>
+  </div>
 
   <script src="/js/main.js" defer></script>
 </body>

@@ -58,38 +58,50 @@ a:hover{ text-decoration: underline; }
 .site-header{
   position: sticky;
   top: 0;
-  backdrop-filter: blur(10px);
-  background: rgba(0,0,0,0.35);
-  border-bottom: 1px solid var(--stroke);
   z-index: 50;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 20px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
 }
 body[data-theme="light"] .site-header{
   background: rgba(255,255,255,0.75);
   border-bottom: 1px solid var(--stroke2);
 }
 
-.nav{
-  max-width: var(--max);
-  margin: 0 auto;
-  padding: 12px 18px;
+/* Terminal window frame (clip, not hidden, so the sticky header still sticks) */
+.term{
+  width: min(1200px, calc(100% - 2 * clamp(16px, 4vw, 48px)));
+  margin: 24px auto 32px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: clip;
+  background: var(--panel-2);
+}
+
+.term-dots{ display:flex; gap: 8px; }
+.term-dots span{ display:block; width: 12px; height: 12px; border-radius: 50%; background: #FF5F57; }
+.term-dots span:nth-child(2){ background: #FEBC2E; }
+.term-dots span:nth-child(3){ background: #28C840; }
+
+.term-prompt{ font-family: var(--font-mono); font-size: 14px; color: var(--text); }
+.term-prompt:hover{ text-decoration: none; }
+.term-prompt .accent{ color: var(--accent); }
+
+.term-nav{
   display:flex;
-  align-items:center;
-  justify-content: space-between;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 6px 20px;
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 13px;
 }
-
-.brand{ display:flex; align-items:center; gap: 10px; }
-.brand-dot{
-  width: 10px; height: 10px; border-radius: 999px;
-  background: var(--accent);
-  box-shadow: 0 0 0 6px rgba(124,92,255,0.15);
-}
-.brand-link{ font-weight: 650; letter-spacing: 0.2px; }
-
-.nav-links{ display:flex; align-items:center; gap: 14px; flex-wrap: wrap; }
-.nav-links a{ padding: 6px 8px; border-radius: 10px; }
-.nav-links a:hover{ background: rgba(255,255,255,0.06); text-decoration:none; }
-body[data-theme="light"] .nav-links a:hover{ background: rgba(0,0,0,0.06); }
+.term-nav a{ color: var(--muted); }
+.term-nav a:hover,
+.term-nav a:focus-visible{ color: var(--accent); text-decoration: none; }
 
 .hero{ padding: 64px 0 18px; }
 .hero-content{
