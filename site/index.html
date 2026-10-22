@@ -9,6 +9,13 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap" />
   <link rel="stylesheet" href="/css/styles.css" />
+  <script>
+    /* Hide the hero only until its intro runs. Motion off, or scripts failing, leaves everything visible. */
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      document.documentElement.classList.add("motion");
+      setTimeout(function () { document.documentElement.classList.remove("motion"); }, 3000);
+    }
+  </script>
 </head>
 
 <body>
@@ -32,56 +39,47 @@
   </header>
 
   <main id="main" class="container">
-    <section class="hero" id="top">
-      <div class="hero-content reveal">
-        <p class="cmd">$ whoami</p>
-        <p class="eyebrow" id="heroTitle">AWS • DevOps • Cloud Engineering</p>
-        <h1 id="heroHeading">AWS Cloud / DevOps Engineer building reproducible, recruiter-grade projects.</h1>
-        <p class="subhead" id="heroSubhead">
-          I build AWS systems with security + delivery in mind, then document them as case studies (diagrams, decisions, and steps).
-        </p>
+    <!-- Hero: typed whoami, name, key-value block, buttons -->
+    <section class="hero hero-home" id="top">
+      <!-- Background: static network (phones, motion off); Vanta NET replaces it on desktop -->
+      <div class="hero-bg" id="heroBg" aria-hidden="true">
+        <svg class="hero-net" viewBox="0 0 1200 520" preserveAspectRatio="xMidYMid slice">
+          <g stroke="#B5F23D" stroke-opacity="0.35" stroke-width="1" fill="none">
+            <line x1="720" y1="80" x2="860" y2="160"></line><line x1="860" y1="160" x2="1010" y2="110"></line><line x1="860" y1="160" x2="900" y2="300"></line><line x1="900" y1="300" x2="1060" y2="260"></line><line x1="1010" y1="110" x2="1120" y2="190"></line><line x1="1060" y1="260" x2="1120" y2="190"></line><line x1="900" y1="300" x2="780" y2="380"></line><line x1="780" y1="380" x2="960" y2="440"></line><line x1="960" y1="440" x2="1060" y2="260"></line><line x1="720" y1="80" x2="640" y2="210"></line><line x1="640" y1="210" x2="780" y2="380"></line><line x1="640" y1="210" x2="860" y2="160"></line><line x1="1120" y1="190" x2="1170" y2="360"></line><line x1="1170" y1="360" x2="960" y2="440"></line>
+          </g>
+          <g fill="#B5F23D">
+            <circle cx="720" cy="80" r="3"></circle><circle cx="860" cy="160" r="4"></circle><circle cx="1010" cy="110" r="3"></circle><circle cx="900" cy="300" r="5"></circle><circle cx="1060" cy="260" r="3"></circle><circle cx="1120" cy="190" r="4"></circle><circle cx="780" cy="380" r="3"></circle><circle cx="960" cy="440" r="4"></circle><circle cx="640" cy="210" r="3"></circle><circle cx="1170" cy="360" r="3"></circle>
+          </g>
+        </svg>
+      </div>
 
-        <!-- Social buttons rendered by JS (with icons) -->
-        <div class="hero-actions" id="socialButtons"></div>
+      <div class="hero-inner">
+        <p class="hero-cmd"><span class="accent">leno@aws</span>:~$ <span class="hero-typed">whoami --brief</span><span class="caret" aria-hidden="true"></span></p>
+        <h1 class="hero-name"><span class="hero-first">Leno</span> <span class="hero-last">Jovicevic</span></h1>
+        <p class="hero-role">// AWS Cloud &amp; DevOps · aspiring Solutions Architect</p>
+        <p class="hero-intro">I design and build AWS systems with security and automated delivery in mind, then document every decision as a case study.</p>
 
-        <!-- Keyword chips rendered by JS -->
-        <div class="hero-keywords" id="keywordChips" aria-label="Specialization keywords"></div>
+        <dl class="hero-kv">
+          <div><dt>location</dt><dd>London, UK</dd></div>
+          <div><dt>focus</dt><dd>AWS · DevOps · Serverless · CI/CD</dd></div>
+          <div><dt>certified</dt><dd>AWS Certified Cloud Practitioner</dd></div>
+          <div><dt>this site</dt><dd>S3 + CloudFront + GitHub Actions (OIDC)</dd></div>
+          <div><dt>next</dt><dd class="accent">Junior Cloud / DevOps Engineer · available now</dd></div>
+        </dl>
+
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#projects">View projects</a>
+          <a class="btn" href="#contact">Get in touch</a>
+          <a class="btn" href="https://github.com/LenoJay" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 .5C5.73.5.75 5.67.75 12.07c0 5.14 3.28 9.5 7.83 11.04.57.11.78-.25.78-.55v-2.02c-3.19.71-3.86-1.39-3.86-1.39-.52-1.36-1.27-1.72-1.27-1.72-1.04-.73.08-.72.08-.72 1.15.08 1.76 1.21 1.76 1.21 1.02 1.79 2.67 1.27 3.32.97.1-.76.4-1.27.73-1.56-2.55-.3-5.23-1.31-5.23-5.82 0-1.29.45-2.34 1.19-3.17-.12-.3-.52-1.52.11-3.17 0 0 .97-.32 3.18 1.21.92-.26 1.9-.39 2.88-.39.98 0 1.96.13 2.88.39 2.2-1.53 3.17-1.21 3.17-1.21.64 1.65.24 2.87.12 3.17.74.83 1.19 1.88 1.19 3.17 0 4.52-2.68 5.52-5.24 5.81.41.36.78 1.08.78 2.18v3.23c0 .31.2.67.79.55 4.55-1.54 7.83-5.9 7.83-11.04C23.25 5.67 18.27.5 12 .5z"/></svg>GitHub</a>
+          <a class="btn" href="https://www.linkedin.com/in/leno-jovicevic-197b03175/" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4.98 3.5C3.33 3.5 2 4.85 2 6.52c0 1.64 1.31 2.98 2.94 2.98h.03c1.68 0 2.98-1.34 2.98-2.98C7.95 4.85 6.66 3.5 4.98 3.5zM2.4 21h5.16V9.98H2.4V21zM9.26 9.98V21h5.16v-6.15c0-3.29 4.27-3.56 4.27 0V21H24v-7.93c0-6.18-6.65-5.95-8.58-2.91V9.98H9.26z"/></svg>LinkedIn</a>
+        </div>
       </div>
     </section>
 
     <section class="section" id="about">
-      <div class="section-head reveal">
-        <p class="cmd">$ cat about.md</p>
-        <h2><span class="sec-num">01</span> About</h2>
-        <p>A short intro with highlighted focus areas.</p>
-      </div>
-
-      <div class="two-col reveal">
-        <div class="card">
-          <h3>Hi, I’m <span id="aboutName">Leno Jovicevic</span>.</h3>
-
-          <p class="muted" id="aboutText">
-            I’m building a portfolio of <span class="hl">AWS</span> projects that show real <span class="hl">DevOps</span> ability:
-            <span class="hl">secure hosting</span>, <span class="hl">CI/CD</span>, and <span class="hl">event-driven</span> systems.
-            My goal is to earn a junior cloud role and grow into a <span class="hl">Solutions Architect</span> by proving I can build,
-            document, and explain production-style systems.
-            Right now I’m focused on <span class="hl">CloudFront + S3</span> security patterns and <span class="hl">serverless</span>
-            workflows like <span class="hl">EventBridge → Lambda → SNS</span>.
-          </p>
-
-          <!-- Extra “specialization chips” shown under the about -->
-          <div class="about-badges" id="aboutBadges"></div>
-        </div>
-
-        <div class="card">
-          <h3>What you’ll find here</h3>
-          <ul class="muted">
-            <li><strong>Case studies</strong> for each project (architecture, decisions, and build steps)</li>
-            <li><strong>Skills</strong> grouped by domain (easy to scan)</li>
-            <li><strong>Blog</strong> posts capturing what I learned building on AWS</li>
-          </ul>
-        </div>
-      </div>
+      <p class="cmd">$ cat about.md</p>
+      <h2>About</h2>
+      <p class="about-text">I'm building a portfolio of <mark>AWS</mark> projects that show real <mark>DevOps</mark> ability: secure hosting, CI/CD and event-driven systems. My goal is a junior cloud role, then <mark>Solutions Architect</mark>, by proving I can build, document and explain production-style systems. Right now I'm focused on CloudFront + S3 security patterns and serverless workflows like EventBridge → Lambda → SNS.</p>
     </section>
 
     <section class="section" id="projects">
@@ -151,6 +149,7 @@
   </footer>
   </div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" integrity="sha384-g4NTh/Iv5PPU4xPyhEWqPcwtNXOvdaDI8LLnyYfyNZOjKJeYQyjzQ9X5275eBjpt" crossorigin="anonymous" defer></script>
   <script src="/js/main.js" defer></script>
 </body>
 </html>

@@ -1,4 +1,5 @@
 const $ = (sel) => document.querySelector(sel);
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 const state = {
   activeTag: "All",
@@ -34,6 +35,99 @@ function initRevealAnimations() {
     { threshold: 0.12 }
   );
   els.forEach((e) => io.observe(e));
+}
+
+/* ---------- Hero intro (GSAP, runs once, under 2.5 s) ---------- */
+function heroIntro() {
+  const root = document.documentElement;
+  const hero = $(".hero-inner");
+  if (!hero || !window.gsap || reduceMotion) {
+    root.classList.remove("motion");
+    return;
+  }
+
+  const typed = hero.querySelector(".hero-typed");
+  const name = hero.querySelector(".hero-name");
+  const last = hero.querySelector(".hero-last");
+  const command = typed.textContent;
+
+  // Screen readers get the full name; the letters are split only for the animation
+  name.setAttribute("aria-label", name.textContent);
+  last.innerHTML = [...last.textContent].map((ch) => `<span>${escapeHtml(ch)}</span>`).join("");
+  typed.textContent = "";
+
+  const chars = { n: 0 };
+  gsap.timeline({ defaults: { ease: "power2.out" } })
+    .to(chars, {
+      n: command.length,
+      duration: 0.6,
+      ease: "none",
+      onUpdate: () => { typed.textContent = command.slice(0, Math.round(chars.n)); },
+    })
+    .from(".hero-first", { autoAlpha: 0, y: 24, duration: 0.35 })
+    .from(last.children, { autoAlpha: 0, y: 12, duration: 0.22, stagger: 0.03 }, "-=0.15")
+    .from([".hero-role", ".hero-intro"], { autoAlpha: 0, y: 10, duration: 0.3, stagger: 0.08 }, "-=0.1")
+    .from(".hero-kv", { autoAlpha: 0, duration: 0.15 }, "-=0.1")
+    .from(".hero-kv > div", { autoAlpha: 0, x: -8, duration: 0.18, stagger: 0.07 })
+    .from(".hero-actions .btn", { autoAlpha: 0, y: 8, duration: 0.28, stagger: 0.05 }, "-=0.05");
+
+  // The from() tweens have already set their start states, so the hero can be un-hidden now
+  root.classList.remove("motion");
+}
+
+/* ---------- Hero background: Vanta NET (desktop and motion on only) ---------- */
+function loadScript(src, integrity) {
+  return new Promise((resolve, reject) => {
+    const s = document.createElement("script");
+    s.src = src;
+    s.integrity = integrity;
+    s.crossOrigin = "anonymous";
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+async function heroBackground() {
+  const el = $("#heroBg");
+  if (!el || reduceMotion || !window.matchMedia("(min-width: 768px)").matches) return;
+
+  try {
+    await loadScript(
+      "https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js",
+      "sha384-9EQoUIJYrv09/oYhSxnw1VpLcfPw3BM9dE7+D/3wGUPeLLa7F9Z6OAoD+i/M6FK9"
+    );
+    await loadScript(
+      "https://cdnjs.cloudflare.com/ajax/libs/vanta/0.5.24/vanta.net.min.js",
+      "sha384-L0sjdcIWJ156WmvbxIBHx79j1WrCqANCyw456nl/aPWSYiHNywEU2VIAcbSJeIiX"
+    );
+  } catch {
+    return; // keep the static SVG network
+  }
+
+  // Only render while the hero is on screen, to save battery and CPU
+  let effect = null;
+  const start = () => {
+    if (effect) return;
+    effect = window.VANTA.NET({
+      el,
+      mouseControls: true,
+      touchControls: false,
+      gyroControls: false,
+      color: 0xb5f23d,
+      backgroundColor: 0x0e1110,
+      points: 8,
+      maxDistance: 18,
+      spacing: 18,
+      showDots: true,
+    });
+    el.classList.add("is-live");
+  };
+  const stop = () => {
+    if (effect) effect.destroy();
+    effect = null;
+  };
+  new IntersectionObserver(([entry]) => (entry.isIntersecting ? start() : stop())).observe(el);
 }
 
 function makeAction(label, href, kind, iconSvg) {
@@ -308,6 +402,8 @@ function initMeta() {
 
 (async function main() {
   initMeta();
+  heroIntro();
+  heroBackground();
   initRevealAnimations();
 
   try {
