@@ -6,7 +6,6 @@ const state = {
   skills: [],
   certs: [],
   blog: [],
-  profile: null,
 };
 
 function escapeHtml(s) {
@@ -140,61 +139,6 @@ function makeAction(label, href, kind, iconSvg) {
   return `<a class="${cls}" href="${escapeHtml(href)}"${extra}>${iconSvg || ""}${escapeHtml(label)}</a>`;
 }
 
-function svgGitHub() {
-  return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M12 .5C5.73.5.75 5.67.75 12.07c0 5.14 3.28 9.5 7.83 11.04.57.11.78-.25.78-.55v-2.02c-3.19.71-3.86-1.39-3.86-1.39-.52-1.36-1.27-1.72-1.27-1.72-1.04-.73.08-.72.08-.72 1.15.08 1.76 1.21 1.76 1.21 1.02 1.79 2.67 1.27 3.32.97.1-.76.4-1.27.73-1.56-2.55-.3-5.23-1.31-5.23-5.82 0-1.29.45-2.34 1.19-3.17-.12-.3-.52-1.52.11-3.17 0 0 .97-.32 3.18 1.21.92-.26 1.9-.39 2.88-.39.98 0 1.96.13 2.88.39 2.2-1.53 3.17-1.21 3.17-1.21.64 1.65.24 2.87.12 3.17.74.83 1.19 1.88 1.19 3.17 0 4.52-2.68 5.52-5.24 5.81.41.36.78 1.08.78 2.18v3.23c0 .31.2.67.79.55 4.55-1.54 7.83-5.9 7.83-11.04C23.25 5.67 18.27.5 12 .5z"/></svg>`;
-}
-function svgLinkedIn() {
-  return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M4.98 3.5C3.33 3.5 2 4.85 2 6.52c0 1.64 1.31 2.98 2.94 2.98h.03c1.68 0 2.98-1.34 2.98-2.98C7.95 4.85 6.66 3.5 4.98 3.5zM2.4 21h5.16V9.98H2.4V21zM9.26 9.98V21h5.16v-6.15c0-3.29 4.27-3.56 4.27 0V21H24v-7.93c0-6.18-6.65-5.95-8.58-2.91V9.98H9.26z"/></svg>`;
-}
-function svgMail() {
-  return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>`;
-}
-function svgBook() {
-  return `<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path fill="currentColor" d="M18 2H8C6.9 2 6 2.9 6 4v16c0 1.1.9 2 2 2h10v-2H8V4h10v6h2V4c0-1.1-.9-2-2-2z"/><path fill="currentColor" d="M11 6h6v2h-6V6zm0 4h6v2h-6v-2zm0 4h6v2h-6v-2z"/></svg>`;
-}
-
-function renderProfile() {
-  const p = state.profile;
-  if (!p) return;
-
-  const aboutName = $("#aboutName");
-  if (aboutName) aboutName.textContent = p.name || "Leno Jovicevic";
-
-  const heroTitle = $("#heroTitle");
-  if (heroTitle) heroTitle.textContent = (p.specializations || []).slice(0, 3).join(" • ") || "AWS • DevOps • Cloud";
-
-  const keywordChips = $("#keywordChips");
-  if (keywordChips) {
-    keywordChips.innerHTML = (p.specializations || []).map((k) => `<span class="tag">${escapeHtml(k)}</span>`).join("");
-  }
-
-  const badges = $("#aboutBadges");
-  if (badges) {
-    badges.innerHTML = (p.highlight_keywords || []).slice(0, 10).map((k) => `<span class="tag tag-tool">${escapeHtml(k)}</span>`).join("");
-  }
-
-  const social = $("#socialButtons");
-  const mailHref = p.email ? `mailto:${p.email}` : "";
-  if (social) {
-    social.innerHTML = [
-      makeAction("GitHub", p.github, "primary", svgGitHub()),
-      makeAction("LinkedIn", p.linkedin, "ghost", svgLinkedIn()),
-      makeAction("Blog", p.blog_home, "ghost", svgBook()),
-      makeAction("Email", mailHref, "ghost", svgMail()),
-    ].join("");
-  }
-
-  const contact = $("#contactButtons");
-  if (contact) {
-    contact.innerHTML = [
-      makeAction("Email", mailHref, "primary", svgMail()),
-      makeAction("LinkedIn", p.linkedin, "ghost", svgLinkedIn()),
-      makeAction("GitHub", p.github, "ghost", svgGitHub()),
-      makeAction("Blog", p.blog_home, "ghost", svgBook()),
-    ].join("");
-  }
-}
-
 /* ---------- Projects ---------- */
 function statusPill(status) {
   const s = String(status || "").toLowerCase();
@@ -322,71 +266,52 @@ function initSpotlight() {
   });
 }
 
-/* ---------- Certifications ---------- */
+/* ---------- Certifications (badge cards) ---------- */
 function renderCerts() {
   const wrap = $("#certGrid");
   if (!wrap) return;
 
+  // Schema: [{ name, issuer, year, status, verify, badge }]. Paste a Credly badge image URL into "badge".
   wrap.innerHTML = (state.certs || [])
     .map((c) => {
-      const verifyHref = (c.verify || "").trim();
-      const topRight = `<span class="status ${String(c.status || "").toLowerCase().includes("verify") ? "status-live" : ""}">${escapeHtml(c.status || "")}</span>`;
-      const actions = makeAction("Verify", verifyHref, "ghost");
-      return `
-        <div class="cert">
-          <div class="cert-top">
-            <div>
-              <h3 class="cert-name">${escapeHtml(c.name)}</h3>
-              <div class="cert-meta">${escapeHtml(c.issuer || "")} • ${escapeHtml(c.year || "")}</div>
-            </div>
-            ${topRight}
-          </div>
-          <div class="card-actions" style="margin-top:12px;">
-            ${actions}
-          </div>
-        </div>
-      `;
+      const verify = (c.verify || "").trim();
+      const badge = (c.badge || "").trim();
+      const art = badge
+        ? `<img class="cert-img" src="${escapeHtml(badge)}" alt="" width="64" height="64" loading="lazy" />`
+        : `<span class="cert-fallback" aria-hidden="true">${escapeHtml(c.issuer || "")}</span>`;
+      const meta = [c.year, String(c.status || "").toLowerCase()].filter(Boolean).map(escapeHtml).join(" · ");
+      const verifyText = verify ? ` · verify${/credly/i.test(verify) ? " on Credly" : ""} →` : "";
+      const body = `${art}<span class="cert-text"><strong>${escapeHtml(c.name)}</strong><span class="cert-meta">${meta}${verifyText}</span></span>`;
+      return verify
+        ? `<a class="cert-card" href="${escapeHtml(verify)}" target="_blank" rel="noreferrer">${body}</a>`
+        : `<div class="cert-card">${body}</div>`;
     })
     .join("");
 }
 
-/* ---------- Blog ---------- */
+/* ---------- Build notes (the blog as a list) ---------- */
 function renderBlog(gridId = "blogGrid") {
   const wrap = document.getElementById(gridId);
   if (!wrap) return;
 
-  const posts = (state.blog || []).slice().sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  // data-limit="3" on the homepage shows the latest three; the blog page shows all
+  const limit = Number(wrap.dataset.limit) || Infinity;
+  const posts = (state.blog || [])
+    .slice()
+    .sort((a, b) => String(b.date).localeCompare(String(a.date)))
+    .slice(0, limit);
 
   wrap.innerHTML = posts
-    .map((p) => {
-      const tags = toArray(p.tags).map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join("");
-      return `
-        <article class="card blog-card" data-href="${escapeHtml(p.href)}" tabindex="0" role="link" aria-label="Open blog post: ${escapeHtml(p.title)}">
-          <div class="blog-top">
-            <div class="blog-date">${escapeHtml(p.date || "")}</div>
-          </div>
-          <h3>${escapeHtml(p.title)}</h3>
-          <p>${escapeHtml(p.summary || "")}</p>
-          <div class="tags">${tags}</div>
-        </article>
-      `;
-    })
+    .map(
+      (p) => `
+        <a class="post-row" href="${escapeHtml(p.href)}">
+          <span class="post-date">${escapeHtml(p.date || "")}</span>
+          <span class="post-title">${escapeHtml(p.title)}</span>
+          <span class="post-read" aria-hidden="true">read →</span>
+        </a>
+      `
+    )
     .join("");
-
-  wrap.querySelectorAll("[data-href]").forEach((card) => {
-    const href = card.getAttribute("data-href");
-    const go = () => (window.location.href = href);
-    card.addEventListener("click", (e) => {
-      if (e.target.closest("a, button")) return;
-      go();
-    });
-    card.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        go();
-      }
-    });
-  });
 }
 
 /* ---------- Fetch + init ---------- */
@@ -409,21 +334,18 @@ function initMeta() {
   initRevealAnimations();
 
   try {
-    const [profile, projects, skills, certs, blog] = await Promise.all([
-      loadJson("/data/profile.json"),
+    const [projects, skills, certs, blog] = await Promise.all([
       loadJson("/data/projects.json"),
       loadJson("/data/skills.json"),
       loadJson("/data/certs.json"),
       loadJson("/data/blog.json"),
     ]);
 
-    state.profile = profile;
     state.projects = projects;
     state.skills = skills;
     state.certs = certs;
     state.blog = blog;
 
-    renderProfile();
     renderProjects();
     renderSkills();
     renderCerts();

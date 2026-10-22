@@ -4,6 +4,7 @@
     "issuer": "AWS",
     "year": "2025",
     "verify": "",
+    "badge": "",
     "status": "Verified"
   },
   {
@@ -11,6 +12,7 @@
     "issuer": "AWS",
     "year": "2025",
     "verify": "",
+    "badge": "",
     "status": "Completed"
   }
 ]

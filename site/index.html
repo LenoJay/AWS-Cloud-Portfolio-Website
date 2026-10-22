@@ -97,39 +97,32 @@
       <p class="skills-note">// grouped by domain · no percentages</p>
     </section>
 
-    <section class="section" id="blog">
-      <div class="section-head reveal">
-        <p class="cmd">$ blog --latest</p>
-        <h2><span class="sec-num">04</span> Blog</h2>
-        <p>Notes, build logs, and short writeups.</p>
-      </div>
-
-      <div class="blog-grid reveal" id="blogGrid" aria-label="Blog posts"></div>
-
-      <div style="margin-top:14px;" class="reveal">
-        <a class="btn btn-ghost" href="/blog/index.html">View all posts</a>
-      </div>
+    <section class="section" id="certifications">
+      <p class="cmd">$ certs --verified</p>
+      <h2>Certifications</h2>
+      <!-- Badge cards rendered by main.js from data/certs.json -->
+      <div class="cert-grid" id="certGrid"></div>
     </section>
 
-    <section class="section" id="certifications">
-      <div class="section-head reveal">
-        <p class="cmd">$ certs --verified</p>
-        <h2><span class="sec-num">05</span> Certifications</h2>
-        <p>Verified credentials.</p>
-      </div>
-
-      <div class="cert-grid reveal" id="certGrid" aria-label="Certifications"></div>
+    <section class="section" id="blog">
+      <p class="cmd">$ tail -n 3 ~/blog</p>
+      <h2>Build notes</h2>
+      <!-- Latest 3 posts rendered by main.js from data/blog.json -->
+      <div class="post-list" id="blogGrid" data-limit="3"></div>
+      <p class="post-more"><a href="/blog/index.html">ls ~/blog → all posts</a></p>
     </section>
 
     <section class="section" id="contact">
-      <div class="section-head reveal">
-        <p class="cmd">$ contact --send</p>
-        <h2><span class="sec-num">06</span> Contact</h2>
-        <p>Get in touch.</p>
-      </div>
-
-      <div class="card reveal">
-        <div class="contact-grid" id="contactButtons"></div>
+      <p class="cmd">$ cat contact.json</p>
+      <h2>Let's talk</h2>
+      <!-- Plain HTML, so contact details show even if JavaScript fails -->
+      <div class="json-block">
+        <div class="json-brace">{</div>
+        <div class="json-line"><span class="json-key">"email":</span> <a href="mailto:lenoj94@gmail.com">"lenoj94@gmail.com"</a>,</div>
+        <div class="json-line"><span class="json-key">"linkedin":</span> <a href="https://www.linkedin.com/in/leno-jovicevic-197b03175/" target="_blank" rel="noreferrer">"in/leno-jovicevic"</a>,</div>
+        <div class="json-line"><span class="json-key">"github":</span> <a href="https://github.com/LenoJay" target="_blank" rel="noreferrer">"LenoJay"</a>,</div>
+        <div class="json-line"><span class="json-key">"location":</span> <span class="json-str">"London, UK"</span></div>
+        <div class="json-brace">}</div>
       </div>
     </section>
   </main>
